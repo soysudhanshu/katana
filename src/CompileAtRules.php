@@ -19,6 +19,8 @@ class CompileAtRules
             if (method_exists($this, $methodName)) {
                 return $this->{$methodName}($matches);
             }
+            
+            return "@" . $matches['directive'] . ($matches['expression'] ?? ' ');
         }, $this->content);
 
         return $this->content;
@@ -37,5 +39,15 @@ class CompileAtRules
     protected function compileElse(array $matches): string
     {
         return "<?php else: ?>";
+    }
+
+    protected function compileForeach(array $matches): string
+    {
+        return "<?php foreach{$matches['expression']}: ?>";
+    }
+
+    protected function compileEndforeach(array $matches): string
+    {
+        return "<?php endforeach; ?>";
     }
 }
