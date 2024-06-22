@@ -13,6 +13,7 @@ class Compiler
     public function compile()
     {
         $result = (new ComponentTagsCompiler($this->template))->compile();
+        $result = (new CompileAtRules($result))->compile();
         $result = $this->compileCommentDirective($result);
         $result = $this->compileOutputDirective($result);
         // $result = $this->compileOutputDirective($result);
