@@ -1,63 +1,43 @@
 <?php
 
+namespace Tests;
+
 use Blade\BladeCompiler;
 use PHPUnit\Framework\TestCase;
 
-
 class OutputDirectiveTest extends TestCase
 {
-    protected BladeCompiler $compiler;
-
-    public function setup(): void
-    {
-        $this->compiler = new BladeCompiler();
-    }
+    use VerifiesOutputTrait;
 
     public function testOutputDirective()
     {
         $this->assertEquals(
-            '<?php echo htmlentities($output); ?>',
-            $this->compiler->compileString('{{$output}}')
+            "<div>Hello, World!</div>",
+            $this->renderBlade("<div>{{ 'Hello, World!' }}</div>")
         );
     }
 
     public function testAllowsExpression()
     {
         $this->assertEquals(
-            '<?php echo htmlentities(1 + 2); ?>',
-            $this->compiler->compileString('{{1 + 2}}')
-        );
-    }
-
-    public function testAllowsFunctions()
-    {
-        $this->assertEquals(
-            '<?php echo htmlentities( time() ); ?>',
-            $this->compiler->compileString("{{ time() }}")
+            '3',
+            $this->renderBlade('{{1 + 2}}')
         );
     }
 
     public function testUnsafeOutputDirective()
     {
         $this->assertEquals(
-            '<?php echo $output; ?>',
-            $this->compiler->compileString('{!!$output!!}')
+            '<script>alert()</script>',
+            $this->renderBlade('{!! "<script>alert()</script>" !!}')
         );
     }
 
     public function testUnsafeAllowsExpression()
     {
         $this->assertEquals(
-            '<?php echo 1 + 2; ?>',
-            $this->compiler->compileString('{!!1 + 2!!}')
-        );
-    }
-
-    public function testUnsafeAllowsFunctions()
-    {
-        $this->assertEquals(
-            '<?php echo time(); ?>',
-            $this->compiler->compileString("{!!time()!!}")
+            '3',
+            $this->renderBlade('{!!1 + 2!!}')
         );
     }
 }

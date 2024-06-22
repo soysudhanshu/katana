@@ -39,16 +39,8 @@ class ComponentTagsCompiler
         return preg_replace_callback(
             $regex,
             function ($matches) {
-                // dd($matches);
-                return sprintf(
-                    <<<'HTML'
-                        <?php
-                        $component_renderer->prepare('components.%s');
-                        echo $component_renderer->render();
-                        ?>
-                    HTML,
-                    $matches['name']
-                );
+                return "<?php \$component_renderer->prepare('components.{$matches['name']}');" .
+                    "echo \$component_renderer->render(); ?>";
             },
             $template
         );

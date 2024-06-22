@@ -1,7 +1,8 @@
 {
     "autoload": {
         "psr-4": {
-            "Blade\\": "src/"
+            "Blade\\": "src/",
+            "Tests\\": "tests/"
         }
     },
     "require-dev": {

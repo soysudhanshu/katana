@@ -1,22 +1,31 @@
 <?php
 
-use Blade\BladeCompiler;
+namespace Tests;
+
 use PHPUnit\Framework\TestCase;
 
 class ComponentTagsTest extends TestCase
 {
-    protected BladeCompiler $compiler;
-
-    public function setup(): void
-    {
-        $this->compiler = new BladeCompiler();
-    }
+    use VerifiesOutputTrait;
 
     public function testCompilesTagIntoDirective()
     {
-        $this->assertEquals(
-            "<?php (new Component('components.component-name', []))->render(); ?>",
-            $this->compiler->compileString('<x-component-name></x-component-name>')
+        $this->createComponent('alert', '<div>Hello, World!</div>');
+
+        $this->assertSame(
+            "<div>Hello, World!</div>",
+            $this->renderBlade("<x-alert />")
         );
     }
+
+    public function testCompilesTagWithAttributes()
+    {
+        $this->createComponent('alert', '<div>Hello, World!</div>');
+
+        $this->assertSame(
+            "<div>Hello, World!</div>",
+            $this->renderBlade("<x-alert/>")
+        );
+    }
+
 }
