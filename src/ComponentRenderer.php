@@ -12,9 +12,12 @@ class ComponentRenderer
     {
     }
 
-    public function prepare(string $name)
+    public function prepare(string $name, $data = [])
     {
-        $this->stack[] = $name;
+        $this->stack[] = [
+            'name' => $name,
+            'data' => $data,
+        ];
         ob_start();
     }
 
@@ -27,9 +30,12 @@ class ComponentRenderer
             return 'Trying to call render without compoenent being prepared';
         }
 
+        $component = array_pop($this->stack);
+
+
         return $this->blade->render(
-            array_pop($this->stack) ?? '',
-            ['slot' => fn () => $slot]
+            $component['name'],
+            ['slot' => fn () => $slot, ...$component['data']]
         );;
     }
 }

@@ -24,14 +24,14 @@ class ComponentTagsCompiler
         /
         <x-(?'name'[\w]+)
         (?'attribute'
-           (\s*
-            [\w:-]+
-             (=
-               (
-                "[^"]+"
-               )
-             )
-           )*
+            (\s*
+                [\w:-]+
+                (=
+                    (
+                        "[^"]+"
+                    )
+                )*
+            )*
         )\s*\/>
         /x
         REGEX;
@@ -39,7 +39,10 @@ class ComponentTagsCompiler
         return preg_replace_callback(
             $regex,
             function ($matches) {
-                return "<?php \$component_renderer->prepare('components.{$matches['name']}');" .
+
+                $attributes = $this->parseAttributes($matches['attribute']);
+
+                return "<?php \$component_renderer->prepare('components.{$matches['name']}', {$attributes});" .
                     "echo \$component_renderer->render(); ?>";
             },
             $template
@@ -47,6 +50,39 @@ class ComponentTagsCompiler
 
         return $template;
     }
+
+    protected function parseAttributes(string $attribute): string
+    {
+        if ($attribute === '') {
+            return '';
+        }
+
+        $attributes =   preg_replace_callback(
+            "/((?'name'[\w:-]+)(?>=(?'value'\"[^\"]+\"|'[^']+'))?)/",
+            function ($matches) {
+
+                $name = $matches['name'];
+                $value = $matches['value'] ?? null;
+
+                if (str_starts_with($name, ':')) {
+                    $name = substr($name, 1);
+                    $value = trim($value, '"');
+
+                    return "'{$name}' => {$value},";
+                }
+
+                if (isset($matches['value'])) {
+                    return "'{$matches['name']}' => {$matches['value']},";
+                }
+
+                return "'{$matches['name']}' => true,";
+            },
+            $attribute
+        );
+
+        return "[ $attributes ]";
+    }
+
 
     protected function compileOpeningTags(string $template): string
     {

@@ -8,7 +8,7 @@ class ComponentTagsTest extends TestCase
 {
     use VerifiesOutputTrait;
 
-    public function testCompilesTagIntoDirective()
+    public function testSelfClosingTagOutput()
     {
         $this->createComponent('alert', '<div>Hello, World!</div>');
 
@@ -18,7 +18,7 @@ class ComponentTagsTest extends TestCase
         );
     }
 
-    public function testCompilesTagWithAttributes()
+    public function testSelfClosingComponentWithoutSpace()
     {
         $this->createComponent('alert', '<div>Hello, World!</div>');
 
@@ -28,4 +28,13 @@ class ComponentTagsTest extends TestCase
         );
     }
 
+    public function testWithBooleanAttribute()
+    {
+        $this->createComponent('alert', '<div>Hello, World! {{ $show }}</div>');
+
+        $this->assertSame(
+            "<div>Hello, World! 1</div>",
+            $this->renderBlade('<x-alert show />')
+        );
+    }
 }
