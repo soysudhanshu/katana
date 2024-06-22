@@ -4,11 +4,6 @@ namespace Blade;
 
 class CompileAtRules
 {
-    protected array $directives = [
-        "if",
-        "endif",
-    ];
-
     public function __construct(protected string $content)
     {
     }
@@ -16,20 +11,31 @@ class CompileAtRules
 
     public function compile(): string
     {
+        $statementRegex = "/@(?'directive'[a-z]+)\s*(?'expression'\(.*?\))?/";
 
-        $this->content = $this->compileIf($this->content);
+        $this->content = preg_replace_callback($statementRegex, function ($matches) {
+            $methodName = sprintf("compile%s", ucfirst($matches['directive']));
+
+            if (method_exists($this, $methodName)) {
+                return $this->{$methodName}($matches);
+            }
+        }, $this->content);
 
         return $this->content;
     }
 
-    protected function compileIf(string $content): string
+    protected function compileIf(array $matches): string
     {
-        $pattern = '/@if\s*\((.*?)\)/';
+        return "<?php if{$matches['expression']}: ?>";
+    }
 
-        $content = preg_replace($pattern, "<?php if($1): ?>", $content);
-        $content = str_replace("@else", "<?php else: ?>", $content);
-        $content = str_replace("@endif", "<?php endif; ?>", $content);
+    protected function compileEndif(array $matches): string
+    {
+        return "<?php endif; ?>";
+    }
 
-        return $content;
+    protected function compileElse(array $matches): string
+    {
+        return "<?php else: ?>";
     }
 }
