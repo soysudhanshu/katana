@@ -29,4 +29,12 @@ class IfBlockTest extends TestCase
             "Goodbye"
         );
     }
+
+    public function testSupportsMultipleParenthesis(): void
+    {
+        $this->assertEquals(
+            trim($this->renderBlade("@if((true)) Hello @endif")),
+            "Hello"
+        );
+    }
 }

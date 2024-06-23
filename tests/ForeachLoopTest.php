@@ -31,4 +31,19 @@ class ForeachLoopTest extends TestCase
             $this->assertStringContainsString("$key => $value", $output);
         }
     }
+
+    public function test_foreach_with_empty()
+    {
+        $this->assertEmpty(
+            $this->renderBlade('@foreach([] as $item){{ "Hello" }}@endforeach')
+        );
+    }
+
+    public function test_foreach_with_nested_parenthesis()
+    {
+        $this->assertEquals(
+            $this->renderBlade('@foreach(range(0, 9) as $item){{ $item }}@endforeach'),
+            "0123456789"
+        );
+    }
 }
