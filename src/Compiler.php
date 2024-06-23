@@ -61,7 +61,7 @@ class Compiler
 
     protected function compileOutputDirective(string $template)
     {
-        return preg_replace("/{{(.*?)}}/", '<?php echo \Blade\e(${1}); ?>', $template);
+        return preg_replace("/{{\s*((\s+|.)*?)\s*}}/", '<?php echo \Blade\e(${1}); ?>', $template);
     }
 
     protected function compileUnsafeOutputDirective(string $template)

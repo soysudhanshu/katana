@@ -25,6 +25,34 @@ class OutputDirectiveTest extends TestCase
         );
     }
 
+    public function testSupportsMultilineOutput()
+    {
+        $this->assertEquals(
+            "Hello, World!" . PHP_EOL,
+            $this->renderBlade("{{
+                'Hello, World!' . PHP_EOL
+            }}")
+        );
+
+        $this->assertEquals(
+            '6',
+            $this->renderBlade("{{
+                1 +
+                2 +
+                3
+            }}")
+        );
+
+        $this->assertEquals(
+            '0',
+            $this->renderBlade("{{
+                time()
+                 -
+                time()
+            }}")
+        );
+    }
+
     public function testUnsafeOutputDirective()
     {
         $this->assertEquals(
