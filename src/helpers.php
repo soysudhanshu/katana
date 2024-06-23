@@ -6,6 +6,10 @@ use Blade\Interfaces\HtmlableInterface;
 
 function e($value): string
 {
+    if($value === null) {
+        return '';
+    }
+
     if($value instanceof HtmlableInterface) {
         return $value->toHtml();
     }
