@@ -61,7 +61,7 @@ class ComponentTagsCompiler
             "/((?'name'[\w:-]+)(?>=(?'value'\"[^\"]+\"|'[^']+'))?)/",
             function ($matches) {
 
-                $name = $matches['name'];
+                $name = $this->toCamelCase($matches['name']);
                 $value = $matches['value'] ?? null;
 
                 if (str_starts_with($name, ':')) {
@@ -72,15 +72,24 @@ class ComponentTagsCompiler
                 }
 
                 if (isset($matches['value'])) {
-                    return "'{$matches['name']}' => {$matches['value']},";
+                    return "'{$name}' => {$matches['value']},";
                 }
 
-                return "'{$matches['name']}' => true,";
+                return "'{$name}' => true,";
             },
             $attribute
         );
 
         return "[ $attributes ]";
+    }
+
+    private function toCamelCase(string $value): string
+    {
+        return preg_replace_callback(
+            '/(-)([a-z])/',
+            fn ($matches) => strtoupper($matches[2]),
+             $value
+        );
     }
 
 
