@@ -28,6 +28,26 @@ class ComponentTagsTest extends TestCase
         );
     }
 
+    public function testComponentNameWithHypen()
+    {
+        $this->createComponent('alert-info', '<div>Hello, World! {{ $name }}</div>');
+
+        $this->assertSame(
+            "<div>Hello, World! Taylor</div>",
+            $this->renderBlade('<x-alert-info name="Taylor" />')
+        );
+    }
+
+    public function testComponentNameWithDirectoryDot()
+    {
+        $this->createComponent('alerts.info', '<div>Hello, World! {{ $name }}</div>');
+
+        $this->assertSame(
+            "<div>Hello, World! Taylor</div>",
+            $this->renderBlade('<x-alerts.info name="Taylor" />')
+        );
+    }
+
     public function testWithBooleanAttribute()
     {
         $this->createComponent('alert', '<div>Hello, World! {{ $show }}</div>');

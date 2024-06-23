@@ -43,11 +43,20 @@ trait VerifiesOutputTrait
             $name = hash('sha256', $template);
         }
 
+        if($isComponent){
+            $name = 'components.' . $name;
+        }
+
+        if (str_contains($name, '.')) {
+            $name = str_replace('.', '/', $name);
+        }
+
         $file = $this->getTempDirectory() . "/{$name}.blade.php";
 
+
         if ($isComponent) {
-            $this->maybeCreateComponentDirectory();
-            $file = $this->getTempDirectory() . "/components/{$name}.blade.php";
+            $directory = pathinfo($file, PATHINFO_DIRNAME);
+            $this->maybeCreateComponentDirectory($directory);
         }
 
 
@@ -60,12 +69,13 @@ trait VerifiesOutputTrait
         return $name;
     }
 
-    private function maybeCreateComponentDirectory(): void
+    private function maybeCreateComponentDirectory(string $directory): void
     {
-        $directory = $this->getTempDirectory() . '/components';
-
         if (!is_dir($directory)) {
-            mkdir($directory);
+            mkdir(
+                directory: $directory,
+                recursive: true
+            );
         }
     }
 

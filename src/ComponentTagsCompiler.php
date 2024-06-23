@@ -22,7 +22,7 @@ class ComponentTagsCompiler
     {
         $regex = <<<'REGEX'
         /
-        <x-(?'name'[\w]+)
+        <x-(?'name'[\w\.-]+)
         (?'attribute'
             (\s*
                 [\w:-]+
