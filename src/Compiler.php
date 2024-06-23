@@ -14,6 +14,7 @@ class Compiler
     {
         $result = (new ComponentTagsCompiler($this->template))->compile();
         $result = (new CompileAtRules($result))->compile();
+        $result = $this->compileComponentAttributes($result);
         $result = $this->compileCommentDirective($result);
         $result = $this->compileOutputDirective($result);
         // $result = $this->compileOutputDirective($result);
@@ -21,6 +22,11 @@ class Compiler
 
 
         return $result;
+    }
+
+    protected function compileComponentAttributes(string $template): string
+    {
+        return $template;
     }
 
 
@@ -55,7 +61,7 @@ class Compiler
 
     protected function compileOutputDirective(string $template)
     {
-        return preg_replace("/{{(.*?)}}/", '<?php echo htmlentities(${1}); ?>', $template);
+        return preg_replace("/{{(.*?)}}/", '<?php echo \Blade\e(${1}); ?>', $template);
     }
 
     protected function compileUnsafeOutputDirective(string $template)

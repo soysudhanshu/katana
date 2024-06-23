@@ -17,6 +17,7 @@ class ComponentRenderer
         $this->stack[] = [
             'name' => $name,
             'data' => $data,
+            'attributes' => new Attributes($data),
         ];
         ob_start();
     }
@@ -32,10 +33,15 @@ class ComponentRenderer
 
         $component = array_pop($this->stack);
 
+        $viewData = [
+            'slot' => fn () => $slot,
+            ...$component['data'],
+            'attributes' => $component['attributes'],
+        ];
 
         return $this->blade->render(
             $component['name'],
-            ['slot' => fn () => $slot, ...$component['data']]
-        );;
+            $viewData
+        );
     }
 }

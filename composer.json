@@ -3,7 +3,10 @@
         "psr-4": {
             "Blade\\": "src/",
             "Tests\\": "tests/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "require-dev": {
         "phpunit/phpunit": "^11.2",

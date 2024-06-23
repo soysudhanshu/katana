@@ -60,4 +60,30 @@ class ComponentTagsTest extends TestCase
             $this->renderBlade('<x-alert first-name="Maria" last-name="Jose" />')
         );
     }
+
+    public function testAttributeOutput(): void
+    {
+        $this->createComponent(
+            'alert',
+            '<div {{ $attributes }}>Hello, World! {{ $name }}</div>'
+        );
+
+        $this->assertSame(
+            "<div name='Taylor'>Hello, World! Taylor</div>",
+            $this->renderBlade('<x-alert name="Taylor" />')
+        );
+    }
+
+    public function testEscapesAttributeOutput(): void
+    {
+        $this->createComponent(
+            'alert',
+            '<div {{ $attributes }}>Hello, World!</div>'
+        );
+
+        $this->assertSame(
+            "<div name='&lt;script&gt;alert(&#039;Hello, World!&#039;)&lt;/script&gt;'>Hello, World!</div>",
+            $this->renderBlade('<x-alert name="<script>alert(\'Hello, World!\')</script>" />')
+        );
+    }
 }
