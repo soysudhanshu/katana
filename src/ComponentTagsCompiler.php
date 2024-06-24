@@ -103,12 +103,30 @@ class ComponentTagsCompiler
     protected function compileOpeningTags(string $template): string
     {
 
-        $regex = "/<x-(?'name'[\w\-\.]+)>/";
+        $regex = <<<'REGEX'
+        /
+        <x-(?'name'[\w\.-]+)
+        (?'attribute'
+            (\s*
+                [\w:-]+
+                (=
+                    (
+                        "[^"]+"
+                    )
+                )*
+            )*
+        )\s*>
+        /x
+        REGEX;
 
         return preg_replace_callback(
             $regex,
             function ($matches) {
-                return $this->getStartRenderingCode($matches['name'], '[]');
+
+                return $this->getStartRenderingCode(
+                    $matches['name'],
+                    !empty($matches['attribute']) ? $this->parseAttributes($matches['attribute']) : '[]'
+                );
             },
             $template
         );

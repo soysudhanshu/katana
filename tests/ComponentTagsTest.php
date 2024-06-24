@@ -224,4 +224,30 @@ class ComponentTagsTest extends TestCase
             $this->renderBlade('<x-alerts.info></x-alerts.info>')
         );
     }
+
+    public function testClosingComponentsWithAttributes(): void
+    {
+        $this->createComponent(
+            'alert',
+            '<div>{{ $name }}</div>'
+        );
+
+        $this->assertSame(
+            "<div>Maria</div>",
+            $this->renderBlade('<x-alert name="Maria"></x-alert>')
+        );
+    }
+
+    public function testClosingComponentsWithAttributesAndSlot(): void
+    {
+        $this->createComponent(
+            'alert',
+            '<div>{{ $name }} {{ $slot }}</div>'
+        );
+
+        $this->assertSame(
+            "<div>Maria Hello, World!</div>",
+            $this->renderBlade('<x-alert name="Maria">Hello, World!</x-alert>')
+        );
+    }
 }
