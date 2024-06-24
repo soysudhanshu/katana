@@ -185,4 +185,43 @@ class ComponentTagsTest extends TestCase
             $this->renderBlade('<x-alert name="Taylor" />')
         );
     }
+
+    public function testClosingComponents(): void
+    {
+        $this->createComponent(
+            'alert',
+            '<div></div>'
+        );
+
+        $this->assertSame(
+            "<div></div>",
+            $this->renderBlade('<x-alert></x-alert>')
+        );
+    }
+
+    public function testClosingComponentsWithHyphen(): void
+    {
+        $this->createComponent(
+            'alert-info',
+            '<div></div>'
+        );
+
+        $this->assertSame(
+            "<div></div>",
+            $this->renderBlade('<x-alert-info></x-alert-info>')
+        );
+    }
+
+    public function testClosingComponentsWithDirectoryDot(): void
+    {
+        $this->createComponent(
+            'alerts.info',
+            '<div></div>'
+        );
+
+        $this->assertSame(
+            "<div></div>",
+            $this->renderBlade('<x-alerts.info></x-alerts.info>')
+        );
+    }
 }

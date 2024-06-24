@@ -11,9 +11,8 @@ class ComponentTagsCompiler
     public function compile()
     {
         $result = $this->compileSelfClosingTags($this->template);
-        // dump($result);
-        // $result = $this->compileOpeningTags($result);
-        // $result = $this->compileClosingTags($result);
+        $result = $this->compileOpeningTags($result);
+        $result = $this->compileClosingTags($result);
 
         return $result;
     }
@@ -39,18 +38,24 @@ class ComponentTagsCompiler
         return preg_replace_callback(
             $regex,
             function ($matches) {
-
                 $attributes = $this->parseAttributes($matches['attribute']);
-
-                return "<?php \$component_renderer->prepare('components.{$matches['name']}', {$attributes});" .
-                    "echo \$component_renderer->render(); " .
-                    " \$component_renderer->popComponent();" .
-                    " ?>";
+                return $this->getStartRenderingCode($matches['name'], $attributes) .
+                    $this->getEndRenderingCode();
             },
             $template
         );
 
         return $template;
+    }
+
+    private function getStartRenderingCode(string $componentName, string $attributes): string
+    {
+        return "<?php \$component_renderer->prepare('components.{$componentName}', {$attributes});?>";
+    }
+
+    private function getEndRenderingCode(): string
+    {
+        return "<?php echo \$component_renderer->render(); \$component_renderer->popComponent(); ?>";
     }
 
     protected function parseAttributes(string $attribute): string
@@ -90,7 +95,7 @@ class ComponentTagsCompiler
         return preg_replace_callback(
             '/(-)([a-z])/',
             fn ($matches) => strtoupper($matches[2]),
-             $value
+            $value
         );
     }
 
@@ -98,17 +103,15 @@ class ComponentTagsCompiler
     protected function compileOpeningTags(string $template): string
     {
 
-        $regex = "/(?'tag'<x-(?'name'[:a-z-]+)\s+(.*?)>)/";
+        $regex = "/<x-(?'name'[\w\-\.]+)>/";
 
-        return preg_replace(
+        return preg_replace_callback(
             $regex,
-            <<<'HTML'
-            <?php $component_renderer->prepare('components.$1'); ?>
-            HTML,
+            function ($matches) {
+                return $this->getStartRenderingCode($matches['name'], '[]');
+            },
             $template
         );
-
-        return $template;
     }
 
     protected function compileClosingTags(string $template): string
@@ -117,9 +120,7 @@ class ComponentTagsCompiler
 
         return preg_replace(
             $regex,
-            <<<'HTML'
-            <?php echo $component_renderer->render(); ?>
-            HTML,
+            $this->getEndRenderingCode(),
             $template
         );
 
