@@ -129,4 +129,13 @@ class CompileAtRules
     {
         return "<?php endforeach; ?>";
     }
+
+    /**
+     * Compiles the @props directive.
+     */
+    protected function compileProps(string $expression): string
+    {
+        return "<?php \$component_renderer->setProps({$expression});" .
+            "extract(\$component_renderer->getViewData()); ?>";
+    }
 }

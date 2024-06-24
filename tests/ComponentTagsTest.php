@@ -106,4 +106,83 @@ class ComponentTagsTest extends TestCase
             $this->renderBlade('<x-alert name="<script>alert(\'Hello, World!\')</script>" />')
         );
     }
+
+    public function testMergeAttributes(): void
+    {
+        $this->createComponent(
+            'alert',
+            '<div {{ $attributes->merge([ "hello" => "kitty" ]) }}>Hello, World!</div>'
+        );
+
+        $this->assertSame(
+            "<div class='alert' name='Taylor' hello='kitty'>Hello, World!</div>",
+            $this->renderBlade('<x-alert class="alert" name="Taylor" />')
+        );
+    }
+
+    public function testExceptAttribute(): void
+    {
+        $this->createComponent(
+            'alert',
+            '<div {{ $attributes->except("name") }}>Hello, World!</div>'
+        );
+
+        $this->assertSame(
+            "<div class='alert'>Hello, World!</div>",
+            $this->renderBlade('<x-alert class="alert" name="Taylor"/>')
+        );
+    }
+
+    public function testExceptAttributeWithArray(): void
+    {
+        $this->createComponent(
+            'alert',
+            '<div{{ $attributes->except(["name", "class"]) }}>Hello, World! {{ $name }}</div>'
+        );
+
+        $this->assertSame(
+            "<div>Hello, World! Taylor</div>",
+            $this->renderBlade('<x-alert class="alert" name="Taylor"/>')
+        );
+    }
+
+    public function testPropsSetDefaults(): void
+    {
+        $this->createComponent(
+            'alert',
+            '@props(["name" => "Taylor"])' .
+                '<div>Hello, World! {{ $name }}</div>'
+        );
+
+        $this->assertSame(
+            "<div>Hello, World! Taylor</div>",
+            $this->renderBlade('<x-alert />')
+        );
+    }
+
+    public function testPropsIndexedKeySetsValueToNull(): void
+    {
+        $this->createComponent(
+            'alert',
+            '@props(["name"])@if(is_null($name)){{ "I am null" }}@endif'
+        );
+
+        $this->assertSame(
+            "I am null",
+            $this->renderBlade('<x-alert />')
+        );
+    }
+
+    public function testPropsPreventOutputInAttributes(): void
+    {
+        $this->createComponent(
+            'alert',
+            '@props(["name"])<div{{ $attributes }}>Hello, World! {{ $name }}</div>'
+        );
+
+        $this->assertSame(
+            "<div>Hello, World! Taylor</div>",
+            $this->renderBlade('<x-alert name="Taylor" />')
+        );
+    }
 }

@@ -4,8 +4,11 @@ namespace Blade;
 
 final class Blade
 {
+    public ComponentRenderer $componentRenderer;
+
     public function __construct(protected string $viewPath, protected string $cachePath)
     {
+        $this->componentRenderer = new ComponentRenderer($this);
     }
 
 
@@ -31,7 +34,7 @@ final class Blade
     {
         extract($data);
 
-        $component_renderer = new ComponentRenderer($this);
+        $component_renderer = $this->componentRenderer;
 
         include $this->getCachedViewPath($this->compile($view));
     }

@@ -14,10 +14,11 @@ class ComponentRenderer
 
     public function prepare(string $name, $data = [])
     {
-        $this->stack[] = [
+        $this->stack[] = (object) [
             'name' => $name,
             'data' => $data,
             'attributes' => new Attributes($data),
+            'props' => [],
         ];
         ob_start();
     }
@@ -31,17 +32,72 @@ class ComponentRenderer
             return 'Trying to call render without compoenent being prepared';
         }
 
-        $component = array_pop($this->stack);
+        $component = $this->getLastComponent();
 
-        $viewData = [
-            'slot' => fn () => $slot,
-            ...$component['data'],
-            'attributes' => $component['attributes'],
-        ];
+        $component->slot = $slot;
 
-        return $this->blade->render(
-            $component['name'],
-            $viewData
+        $rendered = $this->blade->render(
+            $component->name,
+            (array) $this->getViewData(),
         );
+
+        return $rendered;
+    }
+
+    public function getViewData(): array
+    {
+        $component = $this->getLastComponent();
+        $attributes = $component->attributes;
+
+        $data = [];
+
+
+        foreach ($attributes as $key => $value) {
+            $data[$key] = $value;
+        }
+
+        /**
+         * Setup remaining props and remove
+         * them from the attributes array.
+         */
+        foreach ($component->props as $key => $prop) {
+            if (is_int($key)) {
+                $key = $prop;
+                $prop = null;
+            }
+
+            if (!isset($data[$key])) {
+                $data[$key] = $prop;
+            }
+
+            if($attributes->has($key)){
+                $attributes->except($key);
+            }
+        }
+
+
+        $data['attributes'] = $attributes;
+        $data['slot'] = $component->slot;
+        $data['component_renderer'] = $this;
+
+        return $data;
+    }
+
+    public function setProps(array $props): void
+    {
+        $component = $this->getLastComponent();
+
+        $component->props = $props;
+    }
+
+
+    public function getLastComponent(): object
+    {
+        return $this->stack[count($this->stack) - 1];
+    }
+
+    public function popComponent(): void
+    {
+        array_pop($this->stack);
     }
 }

@@ -43,7 +43,9 @@ class ComponentTagsCompiler
                 $attributes = $this->parseAttributes($matches['attribute']);
 
                 return "<?php \$component_renderer->prepare('components.{$matches['name']}', {$attributes});" .
-                    "echo \$component_renderer->render(); ?>";
+                    "echo \$component_renderer->render(); " .
+                    " \$component_renderer->popComponent();" .
+                    " ?>";
             },
             $template
         );
