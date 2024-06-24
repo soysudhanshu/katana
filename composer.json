@@ -1,4 +1,8 @@
 {
+    "name": "soysudhanshu/katana",
+    "description": "Stadalone version of laravel Blade",
+    "type": "library",
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "Blade\\": "src/",
