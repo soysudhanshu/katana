@@ -250,4 +250,30 @@ class ComponentTagsTest extends TestCase
             $this->renderBlade('<x-alert name="Maria">Hello, World!</x-alert>')
         );
     }
+
+    protected function testSupportsAttributesWithSingleQuotes()
+    {
+        $this->createComponent(
+            'component',
+            '<div>{{ $name }} is {{ $age }} old</div>'
+        );
+
+        $this->assertEquals(
+            $this->renderBlade('<x-component name="John" age=\'30\' />'),
+            "<div>John is 30 years old</div>"
+        );
+    }
+
+    protected function testComponentSupportsAttributesWithSingleQuotes()
+    {
+        $this->createComponent(
+            'component',
+            '<div>{{ $name }} is {{ $age }} old</div>'
+        );
+
+        $this->assertEquals(
+            $this->renderBlade('<x-component name="John" age=\'30\'></x-component>'),
+            "<div>John is 30 years old</div>"
+        );
+    }
 }

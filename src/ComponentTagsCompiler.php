@@ -27,7 +27,8 @@ class ComponentTagsCompiler
                 [\w:-]+
                 (=
                     (
-                        "[^"]+"
+                        "[^"]+" |
+                        '[^']+'
                     )
                 )*
             )*
