@@ -20,26 +20,26 @@ class ComponentTagsCompiler
     protected function compileSelfClosingTags(string $template): string
     {
         $regex = <<<'REGEX'
-        /
-        <x-(?'name'[\w\.-]+)
-        (?'attribute'
-            (\s*
-                [\w:-]+
-                (=
-                    (
-                        "[^"]+" |
-                        '[^']+'
-                    )
-                )*
-            )*
-        )\s*\/>
+        /<x-(?'name'[a-z0-9-.]*)
+        \s*
+        (?'attributes'
+           (?>[\w\:\-]+
+           (?:=
+             (?>
+               "[^"]+" |
+               '[^']+' |
+               [\w\$]+
+             )\s*|
+           )
+          )*
+        )\s*(\/>)
         /x
         REGEX;
 
         return preg_replace_callback(
             $regex,
             function ($matches) {
-                $attributes = $this->parseAttributes($matches['attribute']);
+                $attributes = $this->parseAttributes($matches['attributes']);
                 return $this->getStartRenderingCode($matches['name'], $attributes) .
                     $this->getEndRenderingCode();
             },
@@ -105,18 +105,19 @@ class ComponentTagsCompiler
     {
 
         $regex = <<<'REGEX'
-        /
-        <x-(?'name'[\w\.-]+)
-        (?'attribute'
-            (\s*
-                [\w:-]+
-                (=
-                    (
-                        "[^"]+"
-                    )
-                )*
-            )*
-        )\s*>
+        /<x-(?'name'[a-z0-9-.]*)
+        \s*
+        (?'attributes'
+           (?>[\w\:\-]+
+           (?:=
+             (?>
+               "[^"]+" |
+               '[^']+' |
+               [\w\$]+
+             )\s*|
+           )
+          )*
+        )\s*(>)
         /x
         REGEX;
 
@@ -126,7 +127,7 @@ class ComponentTagsCompiler
 
                 return $this->getStartRenderingCode(
                     $matches['name'],
-                    !empty($matches['attribute']) ? $this->parseAttributes($matches['attribute']) : '[]'
+                    !empty($matches['attributes']) ? $this->parseAttributes($matches['attributes']) : '[]'
                 );
             },
             $template
