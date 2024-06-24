@@ -66,7 +66,20 @@ class ComponentTagsCompiler
         }
 
         $attributes =   preg_replace_callback(
-            "/((?'name'[\w:-]+)(?>=(?'value'\"[^\"]+\"|'[^']+'))?)/",
+            <<<REGEX
+            /(
+              (?'name'[\w\:\-]+)
+               (=
+               (?'value'
+                 (?>
+                   "[^"]+" |
+                   '[^']+' |
+                   [\w\$]+
+                 )
+               )
+              )?
+            )/x
+            REGEX,
             function ($matches) {
 
                 $name = $this->toCamelCase($matches['name']);
