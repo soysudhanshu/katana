@@ -37,4 +37,13 @@ class IfBlockTest extends TestCase
             "Hello"
         );
     }
+
+
+    public function testSupportsPhp(): void
+    {
+        $this->assertEquals(
+            trim($this->renderBlade("@php echo 'Hello'; @endphp")),
+            "Hello"
+        );
+    }
 }

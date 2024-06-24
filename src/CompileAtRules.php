@@ -132,6 +132,16 @@ class CompileAtRules
             "<?php endforeach; ?>";
     }
 
+    protected function compilePhp(string $expression): string
+    {
+        return "<?php ";
+    }
+
+    protected function compileEndphp(string $expression): string
+    {
+        return " ?>";
+    }
+
     /**
      * Compiles the @props directive.
      */
