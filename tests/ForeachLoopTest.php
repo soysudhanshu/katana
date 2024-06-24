@@ -46,4 +46,36 @@ class ForeachLoopTest extends TestCase
             "0123456789"
         );
     }
+
+    public function test_foreach_exposes_loop_index()
+    {
+        $output = $this->renderBlade(
+            '@foreach([1, 2, 3] as $item){{ $loop->index }}@endforeach'
+        );
+
+        $this->assertEquals($output, "012");
+    }
+
+    public function test_foreach_exposes_loop_iteration()
+    {
+        $output = $this->renderBlade(
+            '@foreach([1, 2, 3] as $item){{ $loop->iteration }}@endforeach'
+        );
+
+        $this->assertEquals($output, "123");
+    }
+
+    public function test_foreach_exposes_loop_first()
+    {
+        $output = $this->renderBlade(
+            '@foreach([1, 2, 3] as $item)' .
+                '@if($loop->first)Only first!@endif' .
+            '@endforeach'
+        );
+
+        $this->assertEquals(
+            $output,
+            "Only first!"
+        );
+    }
 }

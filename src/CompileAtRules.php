@@ -122,12 +122,14 @@ class CompileAtRules
 
     protected function compileForeach(string $expression): string
     {
-        return "<?php foreach{$expression}: ?>";
+        return "<?php \$loop = new \Blade\Loop(); ?>" .
+            "<?php foreach{$expression}: ?>";
     }
 
     protected function compileEndforeach(string $expression): string
     {
-        return "<?php endforeach; ?>";
+        return "<?php \$loop->increment(); ?>" .
+            "<?php endforeach; ?>";
     }
 
     /**
