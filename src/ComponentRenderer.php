@@ -3,6 +3,7 @@
 namespace Blade;
 
 use Blade\Component;
+use Blade\Interfaces\HtmlableInterface;
 
 class ComponentRenderer
 {
@@ -34,7 +35,21 @@ class ComponentRenderer
 
         $component = $this->getLastComponent();
 
-        $component->slot = $slot;
+        $component->slot = new class($slot) implements HtmlableInterface
+        {
+            public function __construct(private string $slot)
+            {
+            }
+            public function toHtml(): string
+            {
+                return $this->slot;
+            }
+
+            public function __toString(): string
+            {
+                return $this->toHtml();
+            }
+        };
 
         $rendered = $this->blade->render(
             $component->name,
@@ -70,7 +85,7 @@ class ComponentRenderer
                 $data[$key] = $prop;
             }
 
-            if($attributes->has($key)){
+            if ($attributes->has($key)) {
                 $attributes->except($key);
             }
         }
