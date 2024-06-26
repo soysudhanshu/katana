@@ -11,7 +11,7 @@ class CompileAtRules
 
     public function compile(): string
     {
-        $statementRegex = "/@(?'directive'[a-z]+)\s*(?'expression'\(.*?\))?/";
+        $statementRegex = "/@(?'directive'[a-z]+)\s*(?'expression'\((?:\s|.)*?\))?/";
 
         $matches = [];
 
