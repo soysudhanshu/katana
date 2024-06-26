@@ -302,4 +302,26 @@ class ComponentTagsTest extends TestCase
             'Dave'
         );
     }
+
+    public function testMultipleNonValueAttributes(): void
+    {
+        $this->createComponent(
+            'component',
+            '@if($hasCat) Has Cat @endif' .
+                '@if($hasDog) Has Dog @endif'
+        );
+
+        $this->assertSame(
+            "Has Cat Has Dog",
+            /**
+             * Remove extra spaces as template 
+             * will have extra spaces due to formatting
+             */
+            preg_replace(
+                '/\s+/',
+                " ",
+                trim($this->renderBlade('<x-component has-cat has-dog />'))
+            )
+        );
+    }
 }
