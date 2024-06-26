@@ -51,8 +51,6 @@ class ComponentTagsCompiler
 
     private function getStartRenderingCode(string $componentName, string $attributes): string
     {
-        Blade::addToCompile("components.{$componentName}");
-
         return "<?php \$component_renderer->prepare('components.{$componentName}', {$attributes});?>";
     }
 
