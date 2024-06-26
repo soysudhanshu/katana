@@ -276,4 +276,30 @@ class ComponentTagsTest extends TestCase
             "<div>John is 30 years old</div>"
         );
     }
+
+    public function testAttributesGetMethod()
+    {
+        $this->createComponent(
+            'component',
+            '{{ $attributes->get("last") }}'
+        );
+
+        $this->assertEquals(
+            $this->renderBlade('<x-component first-name="Dave" last="The Octopus" />'),
+            'The Octopus'
+        );
+    }
+
+    public function testAttributeWithMultipleWords()
+    {
+        $this->createComponent(
+            'component',
+            '{{ $attributes->get("first-name") }}'
+        );
+
+        $this->assertEquals(
+            $this->renderBlade('<x-component first-name="Dave"/>'),
+            'Dave'
+        );
+    }
 }

@@ -21,7 +21,7 @@ class Attributes implements HtmlableInterface, IteratorAggregate
         }
 
         if (is_array($classes)) {
-            $this->attributes['class'] = implode(' ', $classes);
+            $this->attributes['class'] .= implode(' ', $classes);
         }
 
         if (is_string($classes)) {
@@ -74,6 +74,12 @@ class Attributes implements HtmlableInterface, IteratorAggregate
         }
 
         return implode(" ", $output);
+    }
+
+
+    public function get(string $key)
+    {
+        return $this->attributes[toCamelCase($key)] ?? null;
     }
 
     public function toArray(): array
