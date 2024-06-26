@@ -150,4 +150,15 @@ class CompileAtRules
         return "<?php \$component_renderer->setProps({$expression});" .
             "extract(\$component_renderer->getViewData()); ?>";
     }
+
+    /**
+     * Compiles the @class directive.
+     *
+     * @param string $expression
+     * @return string
+     */
+    protected function compileClass(string $expression): string
+    {
+        return "<?php echo \Blade\Blade::classAttribute({$expression}); ?>";
+    }
 }

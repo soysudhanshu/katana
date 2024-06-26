@@ -22,9 +22,12 @@ final class Blade
 
         $identifier = hash('sha256', $path);
 
+        $complied = (new Compiler(file_get_contents($path)))->compile();
+        $complied .= "<?php ##PATH $path ## ?>";
+
         $this->saveCache(
             $identifier,
-            (new Compiler(file_get_contents($path)))->compile()
+            $complied
         );
 
         return $identifier;
@@ -36,7 +39,7 @@ final class Blade
 
         $component_renderer = $this->componentRenderer;
 
-        include $this->getCachedViewPath($this->compile($view));
+        include $this->getCachedViewPath($this->compile($view));;
     }
 
     protected function getViewPath(string $name): string
@@ -62,6 +65,32 @@ final class Blade
         file_put_contents(
             $this->getCachedViewPath($identifier),
             $compiled
+        );
+    }
+
+    /**
+     * Compiles the @class directive.
+     *
+     * @param array $classes
+     * @return string
+     */
+    public static function classAttribute(array $classes): string
+    {
+        $appliedClasses = [];
+
+        foreach($classes as $key => $value){
+            if(is_int($key)){
+                $appliedClasses[] = $value;
+            }else{
+                if($value){
+                    $appliedClasses[] = $key;
+                }
+            }
+        }
+
+        return sprintf(
+            'class="%s"',
+            implode(' ', $appliedClasses)
         );
     }
 }
