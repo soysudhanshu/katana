@@ -12,10 +12,12 @@ class Compiler
 
     public function compile()
     {
-        $result = (new ComponentTagsCompiler($this->template))->compile();
+        $result = $this->template;
+
+        $result = $this->compileCommentDirective($result);
+        $result = (new ComponentTagsCompiler($result))->compile();
         $result = (new CompileAtRules($result))->compile();
         $result = $this->compileComponentAttributes($result);
-        $result = $this->compileCommentDirective($result);
         $result = $this->compileOutputDirective($result);
         // $result = $this->compileOutputDirective($result);
         $result = $this->compileUnsafeOutputDirective($result);
