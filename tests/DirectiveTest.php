@@ -40,4 +40,15 @@ class DirectiveTest extends TestCase
             $this->renderBlade('<x-alert/>')
         );
     }
+
+    public function testCompilesContinue(): void
+    {
+        $this->assertStringContainsString(
+            '',
+            $this->renderBlade(
+                '@foreach($items as $item) @continue {{ $item }} @endforeach',
+                ['items' => [1, 2, 3]]
+            )
+        );
+    }
 }
