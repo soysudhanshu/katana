@@ -8,6 +8,22 @@ trait VerifiesOutputTrait
 {
     private array $createdFiles = [];
 
+    protected Blade $blade;
+
+    protected function setup(): void
+    {
+        parent::setUp();
+
+        if (!is_dir($this->getTempDirectory())) {
+            mkdir($this->getTempDirectory());
+        }
+
+        $this->blade = new Blade(
+            $this->getTempDirectory(),
+            $this->getTempDirectory()
+        );
+    }
+
 
     public function tearDown(): void
     {
@@ -84,13 +100,8 @@ trait VerifiesOutputTrait
     {
         $name = $this->createTemporaryBladeFile(template: $template);
 
-        $blade = new Blade(
-            $this->getTempDirectory(),
-            $this->getTempDirectory()
-        );
-
         ob_start();
-        $blade->render($name, $data);
+        $this->blade->render($name, $data);
         return ob_get_clean();
     }
 
