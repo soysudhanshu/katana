@@ -112,4 +112,34 @@ class IfBlockTest extends TestCase
             "Maria Jose"
         );
     }
+
+    public function testEmpty()
+    {
+        $blade = '@empty($name) No name @endempty';
+
+        $this->assertEquals(
+            trim($this->renderBlade($blade)),
+            "No name"
+        );
+    }
+
+    public function testEmptyWithSetting()
+    {
+        $blade = '@empty($name) No name @endempty';
+
+        $this->assertEquals(
+            trim($this->renderBlade($blade, ['name' => 'John'])),
+            ""
+        );
+    }
+
+    public function testEmptyWithElse()
+    {
+        $blade = '@empty($name) No name @else Name is set @endempty';
+
+        $this->assertEquals(
+            trim($this->renderBlade($blade, ['name' => 'John'])),
+            "Name is set"
+        );
+    }
 }

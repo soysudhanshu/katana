@@ -181,4 +181,14 @@ class CompileAtRules
     {
         return $this->compileEndif($expression);
     }
+
+    protected function compileEmpty(string $expression): string
+    {
+        return "<?php if(empty{$expression}): ?>";
+    }
+
+    protected function compileEndempty(string $expression): string
+    {
+        return $this->compileEndif($expression);
+    }
 }
