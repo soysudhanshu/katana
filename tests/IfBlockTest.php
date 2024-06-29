@@ -64,4 +64,52 @@ class IfBlockTest extends TestCase
             "Hi"
         );
     }
+
+    public function testIssetWithoutSetting(): void
+    {
+        $this->assertEquals(
+            trim($this->renderBlade('@isset($name) Hello @endisset')),
+            ""
+        );
+    }
+
+    public function testIssetWithSetting(): void
+    {
+        $this->assertEquals(
+            trim($this->renderBlade(
+                '@isset($name) Hello @endisset',
+                ['name' => 'John']
+            )),
+            "Hello"
+        );
+    }
+
+    public function testIssetWithElse(): void
+    {
+        $this->assertEquals(
+            trim($this->renderBlade('@isset($name) Hello @else Goodbye @endisset')),
+            "Goodbye"
+        );
+    }
+
+
+    public function testIssetWithMultipleValues()
+    {
+        $blade = '@isset($firstName, $lastName) Hello @else Goodbye @endisset';
+        $this->assertEquals(
+            trim($this->renderBlade($blade)),
+            "Goodbye"
+        );
+
+        $blade = '@isset($firstName, $lastName) {{ $firstName }} {{ $lastName }} @else Goodbye @endisset';
+        $data = [
+            'firstName' => 'Maria',
+            'lastName' => 'Jose'
+        ];
+
+        $this->assertEquals(
+            trim($this->renderBlade($blade, $data)),
+            "Maria Jose"
+        );
+    }
 }

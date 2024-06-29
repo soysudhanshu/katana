@@ -171,4 +171,14 @@ class CompileAtRules
     {
         return "<?php continue; ?>";
     }
+
+    protected function compileIsset(string $expression): string
+    {
+        return "<?php if(isset{$expression}): ?>";
+    }
+
+    protected function compileEndIsset(string $expression): string
+    {
+        return $this->compileEndif($expression);
+    }
 }
