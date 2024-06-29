@@ -46,4 +46,22 @@ class IfBlockTest extends TestCase
             "Hello"
         );
     }
+
+    public function testElseIfSupport(): void
+    {
+        $this->assertEquals(
+            trim($this->renderBlade("@if(false) Hello @elseif(true) Goodbye @endif")),
+            "Goodbye"
+        );
+
+        $this->assertEquals(
+            trim($this->renderBlade("@if(false) Hello @elseif(false) Goodbye @endif")),
+            ""
+        );
+
+        $this->assertEquals(
+            trim($this->renderBlade("@if(false) Hello @elseif(false) Goodbye @else Hi @endif")),
+            "Hi"
+        );
+    }
 }

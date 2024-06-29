@@ -110,6 +110,11 @@ class CompileAtRules
         return "<?php if{$expression}: ?>";
     }
 
+    protected function compileElseif(string $expression): string
+    {
+        return "<?php elseif{$expression}: ?>";
+    }
+
     protected function compileEndif(string $expression): string
     {
         return "<?php endif; ?>";
