@@ -275,4 +275,15 @@ class CompileAtRules
     {
         return "<?php endif; ?>";
     }
+
+
+    protected function compileFor(string $expression): string
+    {
+        return "<?php for{$expression}: ?>";
+    }
+
+    protected function compileEndfor(string $expression): string
+    {
+        return "<?php endfor; ?>";
+    }
 }

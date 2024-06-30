@@ -55,7 +55,7 @@ echo $blade->render('hello', ['name' => 'Jhon Doe']);
 | Directive | Description | Status
 | --- | --- | --- |
 | `@for` | For loop | ✅ |
-| `@foreach` | Foreach loop | ❌ |
+| `@foreach` | Foreach loop | ✅ |
 | `@while` | While loop | ❌ |
 | `@forelse` | Forelse loop | ❌ |
 | `$loop` | Loop variable in the for loop (basic) | ✅ |
