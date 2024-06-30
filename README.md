@@ -32,7 +32,9 @@ echo $blade->render('hello', ['name' => 'Jhon Doe']);
 | --- | --- | --- |
 |  `{{ $var }}` | Display the value of the variable | ✅ |
 | `{!! $var !!}` | Display the value of the variable without escaping | ✅ |
-| `@{{ $var }}` | Escaping blade directive | ❌ |
+| `@{{ $var }}` | Escaping blade directive | ✅ |
+| `@{!! $var !!}` | Escaping unsafe output directive | ✅ |
+| `@@<any>` | Escaping control blade directive | ✅ |
 | `@verbatim` | Prevents rendering | ❌ |
 
 

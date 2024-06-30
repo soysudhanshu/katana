@@ -63,11 +63,29 @@ class Compiler
 
     protected function compileOutputDirective(string $template)
     {
-        return preg_replace("/{{\s*((\s+|.)*?)\s*}}/", '<?php echo \Blade\e(${1}); ?>', $template);
+        return preg_replace_callback("/(@|){{\s*(?'expression'(?:\s+|.)*?)\s*}}/", function (array $matches) {
+            $directive = $matches[0];
+            $expression = $matches['expression'];
+
+            if (str_starts_with($directive, '@')) {
+                return substr($directive, 1);
+            }
+
+            return "<?php echo \Blade\\e($expression); ?>";
+        }, $template);
     }
 
     protected function compileUnsafeOutputDirective(string $template)
     {
-        return preg_replace("/{!!(.*?)!!}/", '<?php echo ${1}; ?>', $template);
+        return preg_replace_callback("/(@|){!!(?'expression'.*?)!!}/",  function (array $matches) {
+            $directive = $matches[0];
+            $expression = $matches['expression'];
+
+            if (str_starts_with($directive, '@')) {
+                return substr($directive, 1);
+            }
+
+            return "<?php echo $expression; ?>";
+        }, $template);
     }
 }

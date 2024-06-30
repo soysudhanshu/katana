@@ -14,7 +14,7 @@ class CompileAtRules
 
     public function compile(): string
     {
-        $statementRegex = "/@(?'directive'[a-z]+)\s*(?'expression'\((?:\s|.)*?\))?/";
+        $statementRegex = "/(@|)@(?'directive'[a-z]+)\s*(?'expression'\((?:\s|.)*?\))?/";
 
         $matches = [];
 
@@ -56,6 +56,15 @@ class CompileAtRules
 
                     $start++;
                 } while ($openParenthesisCount !== $closeParenthesisCount);
+            }
+
+            if(str_starts_with($directive, '@@')) {
+                $this->content = $this->replaceDirective(
+                    $directive,
+                    substr($directive, 1),
+                    $this->content
+                );
+                continue;
             }
 
             $this->content = $this->compileDirective($directive, $this->content);
