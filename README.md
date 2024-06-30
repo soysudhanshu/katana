@@ -42,7 +42,7 @@ echo $blade->render('hello', ['name' => 'Jhon Doe']);
 | Directive | Description | Status
 | --- | --- | --- |
 | `@if` | If statement | ✅ |
-| `@unless` | Convenient if | ❌ |
+| `@unless` | Convenient if | ✅ |
 | `@isset` | Checks if variable is set | ✅ |
 | `@empty` | Check if the variable is empty | ✅ |
 | `@switch` | Switch statement | ✅ |
