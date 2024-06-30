@@ -43,10 +43,10 @@ echo $blade->render('hello', ['name' => 'Jhon Doe']);
 | `@unless` | Convenient if | ❌ |
 | `@isset` | Checks if variable is set | ✅ |
 | `@empty` | Check if the variable is empty | ✅ |
-| `@switch` | Switch statement | ❌ |
-| `@case` | Case statement | ❌ |
-| `@default` | Default statement | ❌ |
-| `@break` | Break statement | ❌ |
+| `@switch` | Switch statement | ✅ |
+| `@case` | Case statement | ✅ |
+| `@default` | Default statement | ✅ |
+| `@break` | Break statement | ✅ |
 | `@continue` | Continue statement | ✅ |
 
 ### Loops

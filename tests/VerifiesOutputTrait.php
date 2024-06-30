@@ -29,6 +29,9 @@ trait VerifiesOutputTrait
     {
 
         foreach ($this->createdFiles as $file) {
+            if(!file_exists($file)){
+                continue;
+            }
             unlink($file);
         }
 

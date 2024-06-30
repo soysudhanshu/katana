@@ -4,6 +4,9 @@ namespace Blade;
 
 class CompileAtRules
 {
+    protected bool $switchOpen = false;
+    protected bool $switchFirstCaseClosed = false;
+
     public function __construct(protected string $content)
     {
     }
@@ -190,5 +193,66 @@ class CompileAtRules
     protected function compileEndempty(string $expression): string
     {
         return $this->compileEndif($expression);
+    }
+
+    protected function compileSwitch(string $expression): string
+    {
+        $this->switchOpen = true;
+        $this->switchFirstCaseClosed = false;
+
+        /**
+         * We are going to leave the switch open
+         * and close them when we encounter the
+         * first case to prevent PHP parse error.
+         *
+         * @todo Revisit this approach, it may
+         * conflict only default case is used.
+         */
+        return "<?php switch{$expression}: ";
+    }
+
+    protected function compileCase(string $expression): string
+    {
+
+        if (!$this->switchFirstCaseClosed) {
+            $this->switchFirstCaseClosed = true;
+            return "case{$expression}: ?>";
+        }
+
+        return "<?php case{$expression}: ?>";
+    }
+
+    protected function compileDefault(string $expression): string
+    {
+        if (!$this->switchFirstCaseClosed) {
+            $this->switchFirstCaseClosed = true;
+            return "default: ?>";
+        }
+
+        return "<?php default: ?>";
+    }
+
+    protected function compileBreak(string $expression): string
+    {
+        return "<?php break; ?>";
+    }
+
+    protected function compileEndswitch(string $expression): string
+    {
+        $this->switchOpen = false;
+
+        if (!$this->switchFirstCaseClosed) {
+
+            $this->switchFirstCaseClosed = false;
+
+            return " endswitch; ?>";
+        }
+
+        $this->switchFirstCaseClosed = false;
+
+
+
+
+        return "<?php endswitch; ?>";
     }
 }
