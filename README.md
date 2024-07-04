@@ -65,3 +65,66 @@ echo $blade->render('hello', ['name' => 'Jhon Doe']);
 | --- | --- | --- |
 | `@class` | Conditional class | ✅ |
 | `@style` | Conditional style | ❌ |
+
+### Components
+| Directive | Description | Status
+|--|--|--|
+|`@component`|  | ❌
+| `Class components` |  | ❌
+|`Anonymous component`|   | ✅
+|`Vendor Namespacing`|  | ❌
+|`Component Attributes`|  | ✅
+|`Short hand attribute syntax`|  | ❌
+|`Attribute Render Escaping`|  | ❌
+|`Component Methods`|  | ❌
+|`{{ $attributes }}`|  | ✅
+|`{{ $attributes }}`|  | ✅
+|`{{ $attributes->merge() }}`|  | ✅
+|`{{ $attributes->class() }}`|  | ✅
+|`{{ $attributes->class() }} Conditional`|  | ✅
+|`{{ $attributes->prepends() }}`|  | ❌
+|`{{ $attributes->filter() }}`|  | ❌
+|`{{ $attributes->whereStartsWith() }}`|  | ❌
+|`{{ $attributes->whereDoesntStartWith() }}`|  | ❌
+|`{{ $attributes->whereDoesntStartWith()->first() }}`|  | ❌
+|`{{ $attributes->has() }}`|  | ❌
+|`{{ $attributes->hasAny() }}`|  | ❌
+|`{{ $attributes->get() }}`|  | ✅
+|`Default {{ $slot }}`|  | ✅
+|`Name slots {{ $customSlot }}`|  | ❌
+|`$slot->isEmpty()`|  | ❌
+|`$slot->hasActualContent()`|  | ❌
+|`$slot->isEmpty()`|  | ❌
+|`$slot->isEmpty()`|  | ❌
+|`Scoped Slots`|  | ❌
+|`Slot Attributes`|  | ❌
+|`Dynamic Components`|  | ❌
+|`Anonymous Index Components`|  | ❌
+
+
+### Templating
+| Directive | Description | Status
+|--|--|--|
+| `@auth` | | ❌
+| `@guest` | | ❌
+| `@production` | | ❌
+| `@env` | | ❌
+| `@hasSection` | | ❌
+| `@sectionMissing` | | ❌
+| `@include` | | ❌
+| `@session` | | ❌
+| `@checked` | | ❌
+| `@disabled` | | ❌
+| `@readonly` | | ❌
+| `@required` | | ❌
+| `@includeIf` | | ❌
+| `@includeWhen` | | ❌
+| `@includeUnless` | | ❌
+| `@includeFirst` | | ❌
+| `@each` | | ❌
+| `@once` | | ❌
+| `@push` | | ❌
+| `@pushOnce` | | ❌
+| `@prependOnce` | | ❌
+| `@php` | | ✅
+| `@use` | | ❌
