@@ -85,9 +85,10 @@ class ComponentTagsCompiler
                 $name = $this->toCamelCase($matches['name']);
                 $value = $matches['value'] ?? null;
 
-                if (str_starts_with($name, ':')) {
+                if ($this->isExpressionAttribute($name)) {
                     $name = substr($name, 1);
                     $value = trim($value, '"');
+                    $value = $this->trimQuotes($value);
 
                     return "'{$name}' => {$value},";
                 }
@@ -102,6 +103,26 @@ class ComponentTagsCompiler
         );
 
         return "[ $attributes ]";
+    }
+
+    /**
+     * Check if the attribute value is an expression
+     * 
+     * @param string $name
+     * @return bool
+     */
+    private function isExpressionAttribute(string $name): bool
+    {
+        return str_starts_with($name, ':');
+    }
+
+    private function trimQuotes(string $value): string
+    {
+        if (str_starts_with($value, '\'') && str_starts_with($value, '\'')) {
+            return trim($value, '\'');
+        }
+
+        return $value;
     }
 
     private function toCamelCase(string $value): string
