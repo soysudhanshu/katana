@@ -4,6 +4,8 @@ namespace Blade;
 
 class CompileAtRules
 {
+    use CompileForeachTrait;
+
     protected bool $switchOpen = false;
     protected bool $switchFirstCaseClosed = false;
 
@@ -135,18 +137,6 @@ class CompileAtRules
     protected function compileElse(string $expression): string
     {
         return "<?php else: ?>";
-    }
-
-    protected function compileForeach(string $expression): string
-    {
-        return "<?php \$loop = new \Blade\Loop(); ?>" .
-            "<?php foreach{$expression}: ?>";
-    }
-
-    protected function compileEndforeach(string $expression): string
-    {
-        return "<?php \$loop->increment(); ?>" .
-            "<?php endforeach; ?>";
     }
 
     protected function compilePhp(string $expression): string
