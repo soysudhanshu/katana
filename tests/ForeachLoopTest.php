@@ -70,12 +70,29 @@ class ForeachLoopTest extends TestCase
         $output = $this->renderBlade(
             '@foreach([1, 2, 3] as $item)' .
                 '@if($loop->first)Only first!@endif' .
-            '@endforeach'
+                '@endforeach'
         );
 
         $this->assertEquals(
             $output,
             "Only first!"
+        );
+    }
+
+    public function test_nested_loop_variable(): void
+    {
+        $blade = <<<'BLADE'
+            @foreach([1, 2, 3] as $item)
+                {{ $loop->iteration }}
+                @foreach([4] as $nestedItem)
+                    {{ $loop->iteration }}
+                @endforeach
+            @endforeach
+        BLADE;
+
+        $this->assertEquals(
+            "1 1 2 1 3 1",
+            preg_replace('/\s+/', ' ', trim($this->renderBlade($blade)))
         );
     }
 }
