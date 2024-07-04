@@ -14,19 +14,21 @@ class Attributes implements HtmlableInterface, IteratorAggregate
         $this->attributes = $attributes;
     }
 
-    public function class($classes): static
+    public function class(string | array $classes): static
     {
-        if (!isset($this->attributes['class'])) {
+        if (empty($this->attributes['class'])) {
             $this->attributes['class'] = '';
         }
 
-        if (is_array($classes)) {
-            $this->attributes['class'] .= implode(' ', $classes);
-        }
+        $classes =  is_string($classes) ? explode(" ", $classes) : $classes;
 
-        if (is_string($classes)) {
-            $this->attributes['class'] .= " $classes";
-        }
+        $this->attributes['class'] = sprintf(
+            "%s %s",
+            $this->attributes['class'],
+            implode(" ", Blade::getApplicableClasses($classes))
+        );
+
+        $this->attributes['class'] = trim($this->attributes['class']);
 
         return $this;
     }

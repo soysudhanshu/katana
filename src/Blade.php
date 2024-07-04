@@ -69,6 +69,30 @@ final class Blade
     }
 
     /**
+     * Filters conditional classes and
+     * returns only the applicable classes.
+     *
+     * @param array $classes
+     * @return array
+     */
+    public static function getApplicableClasses(array $classes): array
+    {
+        $applicable = [];
+
+        foreach ($classes as $key => $value) {
+            if (is_int($key)) {
+                $applicable[] = $value;
+            } else {
+                if ($value) {
+                    $applicable[] = $key;
+                }
+            }
+        }
+
+        return  $applicable;
+    }
+
+    /**
      * Compiles the @class directive.
      *
      * @param array $classes
@@ -76,21 +100,9 @@ final class Blade
      */
     public static function classAttribute(array $classes): string
     {
-        $appliedClasses = [];
-
-        foreach($classes as $key => $value){
-            if(is_int($key)){
-                $appliedClasses[] = $value;
-            }else{
-                if($value){
-                    $appliedClasses[] = $key;
-                }
-            }
-        }
-
         return sprintf(
             'class="%s"',
-            implode(' ', $appliedClasses)
+            implode(' ', static::getApplicableClasses($classes))
         );
     }
 }
