@@ -35,7 +35,7 @@ echo $blade->render('hello', ['name' => 'Jhon Doe']);
 | `@{{ $var }}` | Escaping blade directive | ✅ |
 | `@{!! $var !!}` | Escaping unsafe output directive | ✅ |
 | `@@<any>` | Escaping control blade directive | ✅ |
-| `@verbatim` | Prevents rendering | ❌ |
+| `@verbatim` | Prevents rendering. Unlike original blade we also support nested verbatims! | ✅ |
 
 
 ### Control Structures
