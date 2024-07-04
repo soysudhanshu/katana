@@ -5,6 +5,14 @@ namespace Blade;
 
 class Compiler
 {
+    /**
+     * Stores blocks of code that must
+     * be rendered as is. E.g @verbatim
+     *
+     * @var array
+     */
+    protected array $contentBlocks = [];
+
     public function __construct(protected string $template)
     {
     }
@@ -14,6 +22,7 @@ class Compiler
     {
         $result = $this->template;
 
+        $result = $this->compileVerbatimDirective($result);
         $result = $this->compileCommentDirective($result);
         $result = (new ComponentTagsCompiler($result))->compile();
         $result = (new CompileAtRules($result))->compile();
@@ -22,8 +31,46 @@ class Compiler
         // $result = $this->compileOutputDirective($result);
         $result = $this->compileUnsafeOutputDirective($result);
 
+        $result = $this->replaceContentBlocks($result);
 
         return $result;
+    }
+
+    protected function compileVerbatimDirective(string $template): string
+    {
+        return preg_replace_callback(
+            "/@verbatim(?'content'(?:\s|.)+)@endverbatim/",
+            function (array $matches) {
+                $content = $matches['content'];
+                $identifier = md5($content);
+
+                $this->contentBlocks[$identifier] = $content;
+
+                return $this->getContentBlockTag($identifier);
+            },
+            $template
+        );
+    }
+
+    protected function getContentBlockTag(string $identifier): string
+    {
+        return sprintf(
+            "\n##CONTENT_BLOCK %s ###\n",
+            $identifier
+        );
+    }
+
+    protected function replaceContentBlocks(string $template): string
+    {
+        foreach ($this->contentBlocks as $identifier => $content) {
+            $template = str_replace(
+                $this->getContentBlockTag($identifier),
+                $content,
+                $template,
+            );
+        }
+
+        return $template;
     }
 
     protected function compileComponentAttributes(string $template): string
