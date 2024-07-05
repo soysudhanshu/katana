@@ -276,4 +276,14 @@ class CompileAtRules
     {
         return "<?php endfor; ?>";
     }
+
+    protected function compileWhile(string $expression): string
+    {
+        return "<?php while{$expression}: ?>";
+    }
+
+    protected function compileEndwhile(string $expression): string
+    {
+        return "<?php endwhile; ?>";
+    }
 }

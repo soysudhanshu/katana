@@ -59,7 +59,7 @@ echo $blade->render('hello', ['name' => 'Jhon Doe']);
 | ---------- | ------------------------------------- | ------ |
 | `@for`     | For loop                              | ✅     |
 | `@foreach` | Foreach loop                          | ✅     |
-| `@while`   | While loop                            | ❌     |
+| `@while`   | While loop                            | ✅     |
 | `@forelse` | Forelse loop                          | ❌     |
 | `$loop`    | Loop variable in the for loop (basic) | ✅     |
 
