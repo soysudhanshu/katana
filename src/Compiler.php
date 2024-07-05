@@ -39,7 +39,7 @@ class Compiler
     protected function compileVerbatimDirective(string $template): string
     {
         return preg_replace_callback(
-            "/@verbatim(?'content'(?:\s|.)+)@endverbatim/",
+            "/@verbatim(?'content'(?:\s|.)*?)@endverbatim/",
             function (array $matches) {
                 $content = $matches['content'];
                 $identifier = md5($content);

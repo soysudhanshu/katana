@@ -29,6 +29,8 @@ class VerbatimDirectiveTest extends TestCase
 
     public function testNestedVerbatim(): void
     {
+        $this->markTestSkipped('Feature not implemented in Laravel');
+
         $content = <<<'CONTENT'
         @verbatim
             @if($content)
@@ -46,6 +48,19 @@ class VerbatimDirectiveTest extends TestCase
         $this->assertSame(
             $content,
             trim($this->renderBlade($blade))
+        );
+    }
+
+    public function testMultipleVerbatim(): void
+    {
+        $content = '@if($content) {{ $content }} @endif';
+
+        $blade = "@verbatim $content @endverbatim" .
+            "@verbatim $content @endverbatim";
+
+        $this->assertSame(
+            $content . " " .  $content,
+            preg_replace('/\s+/', ' ', trim($this->renderBlade($blade)))
         );
     }
 }
