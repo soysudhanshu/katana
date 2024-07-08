@@ -13,8 +13,8 @@ class ComponentAttributeBagTest extends TestCase
         $this->createComponent('alert', '<div {{ $attributes->merge(["class" => "alert"]) }}></div>');
 
         $this->assertSame(
-            '<div class=\'alert\'></div>',
-            $this->renderBlade('<x-alert />')
+            '<div class=\'big alert\'></div>',
+            $this->renderBlade('<x-alert class="big"/>')
         );
     }
 

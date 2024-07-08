@@ -35,7 +35,16 @@ class Attributes implements HtmlableInterface, IteratorAggregate
 
     public function merge(array $attributes): static
     {
-        $this->attributes = array_merge($this->attributes, $attributes);
+        foreach ($attributes as $key => $value) {
+
+            if (!isset($this->attributes[$key])) {
+                $this->attributes[$key] = '';
+            } else {
+                $value = " $value";
+            }
+
+            $this->attributes[$key] .= $value;
+        }
 
         return $this;
     }
