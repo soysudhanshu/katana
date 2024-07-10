@@ -101,7 +101,7 @@ class Compiler
     protected function getContentBlockTag(string $identifier): string
     {
         return sprintf(
-            "\n##CONTENT_BLOCK %s ###\n",
+            "##CONTENT_BLOCK %s ###",
             $identifier
         );
     }
