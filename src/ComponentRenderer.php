@@ -8,11 +8,20 @@ use Blade\Interfaces\HtmlableInterface;
 class ComponentRenderer
 {
     protected array $stack = [];
+    protected array $slots = [];
 
     public function __construct(private Blade $blade)
     {
     }
 
+    /**
+     * Sets up component data for
+     * rendering.
+     *
+     * @param string $name
+     * @param array $data
+     * @return void
+     */
     public function prepare(string $name, $data = [])
     {
         $this->stack[] = (object) [
@@ -20,8 +29,46 @@ class ComponentRenderer
             'data' => $data,
             'attributes' => new Attributes($data),
             'props' => [],
+            'slots' => [],
         ];
+
         ob_start();
+    }
+
+    /**
+     * Begins output buffering for a slot.
+     *
+     * @param string $tag
+     * @param array $data
+     * @return void
+     */
+    public function beginSlot(string $tag, $data = [])
+    {
+        $name = $data['name'];
+
+        $this->slots[$name] = (object) [
+            'name' => $name,
+            'attributes' => new Attributes($data),
+        ];
+
+        ob_start();
+    }
+
+    /**
+     * Ends output buffering for a slot.
+     * and stores the slot content.
+     *
+     * @return void
+     */
+    public function endSlot()
+    {
+        $slotContent = ob_get_clean();
+        $slot = array_pop($this->slots);
+
+        $this->getLastComponent()->slots[$slot->name] = new Slot(
+            $slotContent,
+            $slot->attributes
+        );
     }
 
 
@@ -94,6 +141,10 @@ class ComponentRenderer
         $data['attributes'] = $attributes;
         $data['slot'] = $component->slot;
         $data['component_renderer'] = $this;
+
+        foreach ($component->slots as $name => $slot) {
+            $data[$name] = $slot;
+        }
 
         return $data;
     }

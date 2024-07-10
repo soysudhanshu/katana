@@ -96,7 +96,7 @@ echo $blade->render('hello', ['name' => 'Jhon Doe']);
 | `{{ $attributes->hasAny() }}`                        |             | ❌     |
 | `{{ $attributes->get() }}`                           |             | ✅     |
 | `Default {{ $slot }}`                                |             | ✅     |
-| `Name slots {{ $customSlot }}`                       |             | ❌     |
+| `Name slots {{ $customSlot }}`                       |             | ✅     |
 | `$slot->isEmpty()`                                   |             | ❌     |
 | `$slot->hasActualContent()`                          |             | ❌     |
 | `$slot->isEmpty()`                                   |             | ❌     |

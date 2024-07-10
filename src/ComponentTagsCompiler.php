@@ -51,6 +51,10 @@ class ComponentTagsCompiler
 
     private function getStartRenderingCode(string $componentName, string $attributes): string
     {
+        if ($componentName === 'slot') {
+            return  "<?php \$component_renderer->beginSlot('$componentName', {$attributes});?>";
+        }
+
         return "<?php \$component_renderer->prepare('components.{$componentName}', {$attributes});?>";
     }
 
@@ -107,7 +111,7 @@ class ComponentTagsCompiler
 
     /**
      * Check if the attribute value is an expression
-     * 
+     *
      * @param string $name
      * @return bool
      */
@@ -172,9 +176,15 @@ class ComponentTagsCompiler
     {
         $regex = "/<\/x-(?'name'[a-z\.-]+)>/";
 
-        return preg_replace(
+        return preg_replace_callback(
             $regex,
-            $this->getEndRenderingCode(),
+            function (array $matches) {
+                if ($matches['name'] === 'slot') {
+                    return "<?php \$component_renderer->endSlot(); ?>";
+                }
+
+                return $this->getEndRenderingCode();
+            },
             $template
         );
 
