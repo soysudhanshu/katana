@@ -22,7 +22,7 @@ class Compiler
     {
         $result = $this->template;
 
-        $result = $this->compileVerbatimDirective($result);
+        $result = $this->preprocessStaticBlocks($result);
         $result = $this->compileCommentDirective($result);
         $result = (new ComponentTagsCompiler($result))->compile();
         $result = (new CompileAtRules($result))->compile();
@@ -36,6 +36,30 @@ class Compiler
         return $result;
     }
 
+    /**
+     * Replaces block that do not require
+     * compilation such as @verbatim and @php
+     * with a unique identifier.
+     *
+     * E.g @verbatim, @php
+     *
+     * @param string $template
+     * @return string
+     */
+    protected function preprocessStaticBlocks(string $template): string
+    {
+        $template = $this->compileVerbatimDirective($template);
+        $template = $this->compilePhpBlock($template);
+
+        return $template;
+    }
+
+    /**
+     * Compiles the @verbatim directive.
+     *
+     * @param string $template
+     * @return string
+     */
     protected function compileVerbatimDirective(string $template): string
     {
         return preg_replace_callback(
@@ -45,6 +69,28 @@ class Compiler
                 $identifier = md5($content);
 
                 $this->contentBlocks[$identifier] = $content;
+
+                return $this->getContentBlockTag($identifier);
+            },
+            $template
+        );
+    }
+
+    /**
+     * Compiles the @php directive.
+     *
+     * @param string $template
+     * @return string
+     */
+    protected function compilePhpBlock(string $template): string
+    {
+        return preg_replace_callback(
+            "/@php(?'content'(?:\s|.)*?)@endphp/",
+            function (array $matches) {
+                $content = $matches['content'];
+                $identifier = md5($content);
+
+                $this->contentBlocks[$identifier] = "<?php $content ?>";
 
                 return $this->getContentBlockTag($identifier);
             },
