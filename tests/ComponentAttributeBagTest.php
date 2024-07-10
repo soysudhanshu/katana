@@ -54,4 +54,30 @@ class ComponentAttributeBagTest extends TestCase
             $this->renderBlade('<x-alert />')
         );
     }
+
+    public function testHasMethod(): void
+    {
+        $this->createComponent(
+            'alert',
+            '@if($attributes->has("type")){{ "Attribute Found" }}@endif'
+        );
+
+        $this->assertSame(
+            'Attribute Found',
+            $this->renderBlade('<x-alert type="button"/>')
+        );
+    }
+
+    public function testHasMethodMultiWordAttribute(): void
+    {
+        $this->createComponent(
+            'alert',
+            '@if($attributes->has("aria-label")){{ "Attribute Found" }}@endif'
+        );
+
+        $this->assertSame(
+            'Attribute Found',
+            $this->renderBlade('<x-alert aria-label="Clicky ti click"/>')
+        );
+    }
 }

@@ -105,6 +105,8 @@ class Attributes implements HtmlableInterface, IteratorAggregate
 
     public function has(string $key): bool
     {
+        $key = toCamelCase($key);
+
         return isset($this->attributes[$key]);
     }
 }
