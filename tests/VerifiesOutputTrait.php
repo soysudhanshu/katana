@@ -29,7 +29,7 @@ trait VerifiesOutputTrait
     {
 
         foreach ($this->createdFiles as $file) {
-            if(!file_exists($file)){
+            if (!file_exists($file)) {
                 continue;
             }
             unlink($file);
@@ -62,7 +62,7 @@ trait VerifiesOutputTrait
             $name = hash('sha256', $template);
         }
 
-        if($isComponent){
+        if ($isComponent) {
             $name = 'components.' . $name;
         }
 
@@ -116,5 +116,10 @@ trait VerifiesOutputTrait
             true
         );
         // dd($name);
+    }
+
+    protected function removeIndentation(string $input): string
+    {
+        return preg_replace('/\s+/', ' ', trim($input));
     }
 }
