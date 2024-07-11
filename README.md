@@ -92,7 +92,7 @@ echo $blade->render('hello', ['name' => 'Jhon Doe']);
 | `{{ $attributes->whereStartsWith() }}`               |             | ❌     |
 | `{{ $attributes->whereDoesntStartWith() }}`          |             | ❌     |
 | `{{ $attributes->whereDoesntStartWith()->first() }}` |             | ❌     |
-| `{{ $attributes->has() }}`                           |             | ❌     |
+| `{{ $attributes->has() }}`                           |             | ✅     |
 | `{{ $attributes->hasAny() }}`                        |             | ❌     |
 | `{{ $attributes->get() }}`                           |             | ✅     |
 | `Default {{ $slot }}`                                |             | ✅     |
