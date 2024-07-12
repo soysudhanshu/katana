@@ -103,10 +103,45 @@ class Attributes implements HtmlableInterface, IteratorAggregate
         return new \ArrayIterator($this->attributes);
     }
 
-    public function has(string $key): bool
+    /**
+     * Determine if one or more attributes are set.
+     *
+     * @param  string|array $key
+     * @return bool
+     */
+    public function has(string|array $keys): bool
     {
-        $key = toCamelCase($key);
+        $found = true;
 
-        return isset($this->attributes[$key]);
+        $keys = is_string($keys) ? [$keys] : $keys;
+
+        foreach ($keys as $key) {
+            if (!array_key_exists(toCamelCase($key), $this->attributes)) {
+                $found = false;
+                break;
+            }
+        }
+
+        return $found;
+    }
+
+    /**
+     * Determine if any of the given attributes are present.
+     *
+     * @param array $keys
+     * @return boolean
+     */
+    public function hasAny(array $keys): bool
+    {
+        $found = false;
+
+        foreach ($keys as $key) {
+            if (array_key_exists(toCamelCase($key), $this->attributes)) {
+                $found = true;
+                break;
+            }
+        }
+
+        return $found;
     }
 }
