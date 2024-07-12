@@ -83,7 +83,6 @@ echo $blade->render('hello', ['name' => 'Jhon Doe']);
 | `Attribute Render Escaping`                          |             | ❌     |
 | `Component Methods`                                  |             | ❌     |
 | `{{ $attributes }}`                                  |             | ✅     |
-| `{{ $attributes }}`                                  |             | ✅     |
 | `{{ $attributes->merge() }}`                         |             | ✅     |
 | `{{ $attributes->class() }}`                         |             | ✅     |
 | `{{ $attributes->class() }} Conditional`             |             | ✅     |
@@ -93,7 +92,7 @@ echo $blade->render('hello', ['name' => 'Jhon Doe']);
 | `{{ $attributes->whereDoesntStartWith() }}`          |             | ❌     |
 | `{{ $attributes->whereDoesntStartWith()->first() }}` |             | ❌     |
 | `{{ $attributes->has() }}`                           |             | ✅     |
-| `{{ $attributes->hasAny() }}`                        |             | ❌     |
+| `{{ $attributes->hasAny() }}`                        |             | ✅     |
 | `{{ $attributes->get() }}`                           |             | ✅     |
 | `Default {{ $slot }}`                                |             | ✅     |
 | `Name slots {{ $customSlot }}`                       |             | ✅     |
