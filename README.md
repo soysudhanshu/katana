@@ -18,10 +18,7 @@ composer require soysudhanshu/katana
 
 use Blade\Blade;
 
-$blade = new Blade([
-    'views' => __DIR__ . '/views',
-    'cache' => __DIR__ . '/cache',
-]);
+$blade = $blade = new Blade(__DIR__, __DIR__ . '/.cache');
 
 echo $blade->render('hello', ['name' => 'Jhon Doe']);
 ```
