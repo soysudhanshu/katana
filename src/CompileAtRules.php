@@ -8,6 +8,7 @@ class CompileAtRules
 
     protected bool $switchOpen = false;
     protected bool $switchFirstCaseClosed = false;
+    protected bool $usesTemplateInheritance = false;
 
     public function __construct(protected string $content)
     {
@@ -70,6 +71,10 @@ class CompileAtRules
             }
 
             $this->content = $this->compileDirective($directive, $this->content);
+        }
+
+        if($this->usesTemplateInheritance){
+            $this->content .= $this->endExtends();
         }
 
         return $this->content;
@@ -285,5 +290,32 @@ class CompileAtRules
     protected function compileEndwhile(string $expression): string
     {
         return "<?php endwhile; ?>";
+    }
+
+    protected function compileExtends(string $expression): string
+    {
+        $this->usesTemplateInheritance = true;
+
+        return "<?php \$template_renderer->extends({$expression}); ?>";
+    }
+
+    protected function endExtends(): string
+    {
+        return "<?php \$template_renderer->output(); ?>";
+    }
+
+    protected function compileYield(string $expression): string
+    {
+        return "<?php echo \$template_renderer->yield{$expression}; ?>";
+    }
+
+    protected function compileSection(string $expression): string
+    {
+        return "<?php \$template_renderer->startSection{$expression}; ?>";
+    }
+
+    protected function compileEndsection(string $expression): string
+    {
+        return "<?php \$template_renderer->endSection(); ?>";
     }
 }

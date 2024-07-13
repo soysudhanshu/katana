@@ -5,10 +5,12 @@ namespace Blade;
 final class Blade
 {
     public ComponentRenderer $componentRenderer;
+    public TemplateInheritanceRenderer $templateRenderer;
 
     public function __construct(protected string $viewPath, protected string $cachePath)
     {
         $this->componentRenderer = new ComponentRenderer($this);
+        $this->templateRenderer = new TemplateInheritanceRenderer($this);
     }
 
 
@@ -38,6 +40,7 @@ final class Blade
         extract($data);
 
         $component_renderer = $this->componentRenderer;
+        $template_renderer = $this->templateRenderer;
 
         include $this->getCachedViewPath($this->compile($view));;
     }
