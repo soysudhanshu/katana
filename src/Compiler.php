@@ -5,6 +5,8 @@ namespace Blade;
 
 class Compiler
 {
+    public const REGEX_OUTPUT_DIRECTIVE = "/(@|){{\s*(?'expression'(?:\s+|.)*?)\s*}}/";
+
     /**
      * Stores blocks of code that must
      * be rendered as is. E.g @verbatim
@@ -156,7 +158,7 @@ class Compiler
 
     protected function compileOutputDirective(string $template)
     {
-        return preg_replace_callback("/(@|){{\s*(?'expression'(?:\s+|.)*?)\s*}}/", function (array $matches) {
+        return preg_replace_callback(self::REGEX_OUTPUT_DIRECTIVE, function (array $matches) {
             $directive = $matches[0];
             $expression = $matches['expression'];
 

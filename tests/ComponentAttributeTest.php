@@ -51,4 +51,14 @@ class ComponentAttributeTest extends TestCase
             $this->renderBlade("<x-alert :name='\$name' />", ['name' => 'Taylor'])
         );
     }
+
+    public function testExpressionAttributeWithDoubleQuotes()
+    {
+        $this->createComponent('alert', '<div {{ $attributes }}></div>');
+
+        $this->assertSame(
+            "<div name='Hello, Taylor'></div>",
+            $this->renderBlade('<x-alert name="Hello, {{ $name }}" />', ['name' => 'Taylor'])
+        );
+    }
 }

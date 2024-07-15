@@ -85,9 +85,25 @@ class ComponentTagsCompiler
             )/x
             REGEX,
             function ($matches) {
-
                 $name = $this->toCamelCase($matches['name']);
                 $value = $matches['value'] ?? null;
+
+                /**
+                 * Check if the value is using an output expression
+                 * `{{ ..... }}`. If it is, we need to convert it to
+                 * concatinated string.
+                 */
+                if ($value && preg_match(Compiler::REGEX_OUTPUT_DIRECTIVE, $value) === 1) {
+
+                    $quote = substr($value, 0, 1);
+
+                    $value = preg_replace(
+                        Compiler::REGEX_OUTPUT_DIRECTIVE,
+                        $quote . " . $2 . " . $quote,
+                        $value
+                    );
+                }
+
 
                 if ($this->isExpressionAttribute($name)) {
                     $name = substr($name, 1);
@@ -97,8 +113,8 @@ class ComponentTagsCompiler
                     return "'{$name}' => {$value},";
                 }
 
-                if (isset($matches['value'])) {
-                    return "'{$name}' => {$matches['value']},";
+                if ($value) {
+                    return "'{$name}' => {$value},";
                 }
 
                 return "'{$name}' => true,";
