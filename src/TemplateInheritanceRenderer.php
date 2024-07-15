@@ -56,7 +56,7 @@ class TemplateInheritanceRenderer
         }
     }
 
-    protected function hasSection(string $section): bool
+    public function hasSection(string $section): bool
     {
         return isset($this->sections[$section]);
     }

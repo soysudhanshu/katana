@@ -17,7 +17,7 @@ class CompileAtRules
 
     public function compile(): string
     {
-        $statementRegex = "/(@|)@(?'directive'[a-z]+)\s*(?'expression'\((?:\s|.)*?\))?/";
+        $statementRegex = "/(@|)@(?'directive'[a-z]+)\s*(?'expression'\((?:\s|.)*?\))?/i";
 
         $matches = [];
 
@@ -327,5 +327,10 @@ class CompileAtRules
     protected function compileParent(string $expression): string
     {
         return "### DEFAULT SECTION CONTENT ###";
+    }
+
+    protected function compileHasSection(string $expression): string
+    {
+        return "<?php if(\$template_renderer->hasSection{$expression}): ?>";
     }
 }

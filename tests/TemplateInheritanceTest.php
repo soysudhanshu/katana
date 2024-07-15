@@ -188,4 +188,21 @@ class TemplateInheritanceTest extends TestCase
         );
     }
 
+    public function testHasSection(): void
+    {
+        $this->createTemporaryBladeFile(
+            sprintf(
+                self::LAYOUT,
+                "@hasSection('content') Default Content @yield('content') @endif"
+            ),
+            'layout'
+        );
+
+        $this->assertSame(
+            sprintf(self::LAYOUT, " Default Content  Section Content  "),
+            $this->renderBlade(
+                "@extends('layout') @section('content') Section Content @endsection"
+            )
+        );
+    }
 }
