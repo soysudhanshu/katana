@@ -333,4 +333,9 @@ class CompileAtRules
     {
         return "<?php if(\$template_renderer->hasSection{$expression}): ?>";
     }
+
+    protected function compileSectionMissing(string $expression): string
+    {
+        return "<?php if(!\$template_renderer->hasSection{$expression}): ?>";
+    }
 }

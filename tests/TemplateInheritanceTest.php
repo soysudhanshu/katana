@@ -205,4 +205,22 @@ class TemplateInheritanceTest extends TestCase
             )
         );
     }
+
+    public function testSectionMissing(): void
+    {
+        $this->createTemporaryBladeFile(
+            sprintf(
+                self::LAYOUT,
+                "Content Before @sectionMissing('content') Default Content @endif After Content"
+            ),
+            'layout'
+        );
+
+        $this->assertSame(
+            sprintf(self::LAYOUT, "Content Before  Default Content After Content"),
+            $this->renderBlade(
+                "@extends('layout')"
+            )
+        );
+    }
 }
