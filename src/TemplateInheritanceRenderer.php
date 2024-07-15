@@ -6,6 +6,8 @@ class TemplateInheritanceRenderer
 {
     protected string $template = '';
     protected array $sections = [];
+    protected bool $renderingParentLayout = false;
+    protected string $currentSection = '';
 
     public function __construct(protected Blade $blade)
     {
@@ -30,12 +32,28 @@ class TemplateInheritanceRenderer
     {
         ob_start();
 
-        $this->sections[$section] = null;
+        $this->currentSection = $section;
+
+        if (isset($this->sections[$section])) {
+            return;
+        }
+
+        $this->sections[$section] = (object) [
+            'content' => '',
+            'defaultContent' => '',
+        ];
     }
 
     public function endSection(): void
     {
-        $this->sections[array_key_last($this->sections)] = ob_get_clean();
+
+        $section = $this->sections[$this->currentSection];
+
+        if ($section->content === '') {
+            $section->content = ob_get_clean();
+        } else {
+            $section->defaultContent = ob_get_clean();
+        }
     }
 
     protected function hasSection(string $section): bool
@@ -43,9 +61,39 @@ class TemplateInheritanceRenderer
         return isset($this->sections[$section]);
     }
 
-    protected function getSection(string $section): string
+    protected function getSection(string $name): string
     {
-        return $this->sections[$section];
+        $section = $this->sections[$name];
+
+        return $section->content ? $section->content : $section->defaultContent;
+    }
+
+    public function outputSection(string $type = 'default_content'): void
+    {
+        $this->endSection();
+
+        $section = $this->sections[$this->currentSection];
+        $content = $this->getSection($this->currentSection, $type);
+
+        if ($this->hasParentContentPlaceholder($content)) {
+            $content = $this->replaceParentContentPlaceholder($content, $section);
+        }
+
+        echo $content;
+    }
+
+    protected function hasParentContentPlaceholder(string $content): bool
+    {
+        return strpos($content, '### DEFAULT SECTION CONTENT ###') !== false;
+    }
+
+    protected function replaceParentContentPlaceholder(string $content, object $section): string
+    {
+        return str_replace(
+            '### DEFAULT SECTION CONTENT ###',
+            $section->defaultContent,
+            $content
+        );
     }
 
     public function output(): void
@@ -54,6 +102,8 @@ class TemplateInheritanceRenderer
         if (trim($output) !== '') {
             echo $output;
         }
+
+        $this->renderingParentLayout = true;
 
         echo $this->blade->render($this->template);
     }

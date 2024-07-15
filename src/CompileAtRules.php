@@ -73,7 +73,7 @@ class CompileAtRules
             $this->content = $this->compileDirective($directive, $this->content);
         }
 
-        if($this->usesTemplateInheritance){
+        if ($this->usesTemplateInheritance) {
             $this->content .= $this->endExtends();
         }
 
@@ -317,5 +317,15 @@ class CompileAtRules
     protected function compileEndsection(string $expression): string
     {
         return "<?php \$template_renderer->endSection(); ?>";
+    }
+
+    protected function compileShow(string $expression): string
+    {
+        return "<?php echo \$template_renderer->outputSection(); ?>";
+    }
+
+    protected function compileParent(string $expression): string
+    {
+        return "### DEFAULT SECTION CONTENT ###";
     }
 }
