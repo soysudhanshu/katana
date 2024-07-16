@@ -84,7 +84,7 @@ class ComponentRenderer
 
         $component->slot =  new Slot($slot, new Attributes([]));
 
-        $rendered = $this->blade->render(
+        $rendered = $this->blade->evaluate(
             $component->name,
             (array) $this->getViewData(),
         );

@@ -4,10 +4,15 @@ namespace Blade;
 
 final class Blade
 {
+    private array $viewPaths = [
+        __DIR__ . '/../views',
+    ];
+
     public ComponentRenderer $componentRenderer;
 
-    public function __construct(protected string $viewPath, protected string $cachePath)
+    public function __construct(string $viewPath, protected string $cachePath)
     {
+        $this->viewPaths[] = $viewPath;
         $this->componentRenderer = new ComponentRenderer($this);
     }
 
@@ -33,22 +38,44 @@ final class Blade
         return $identifier;
     }
 
-    public function render(string $view, array $data = []): void
+    public function evaluate(string $view, array $data = []): void
     {
         extract($data);
 
         $component_renderer = $this->componentRenderer;
 
+
         include $this->getCachedViewPath($this->compile($view));;
+    }
+
+    public function render(string $view, array $data = []): string
+    {
+        ob_start();
+
+        $this->evaluate($view, $data);
+        
+        echo ob_get_clean();
+        return  '';
     }
 
     protected function getViewPath(string $name): string
     {
-        return sprintf(
-            '%s/%s.blade.php',
-            rtrim($this->viewPath, '/'),
-            str_replace('.', '/', $name)
-        );
+        foreach ($this->getViewPaths($name) as $path) {
+            if (file_exists($path)) {
+                return $path;
+            }
+        }
+    }
+
+    protected function getViewPaths(string $name): array
+    {
+        return array_map(function ($path) use ($name) {
+            return sprintf(
+                '%s/%s.blade.php',
+                $path,
+                str_replace('.', '/', $name)
+            );
+        }, $this->viewPaths);
     }
 
     protected function getCachedViewPath(string $identifier): string
@@ -104,5 +131,14 @@ final class Blade
             'class="%s"',
             implode(' ', static::getApplicableClasses($classes))
         );
+    }
+
+    public function getBladeFileFromCache(string $template): string
+    {
+        $matches = [];
+
+        preg_match('/##PATH (.*?) ##/', $template, $matches);
+
+        return $matches[1];
     }
 }

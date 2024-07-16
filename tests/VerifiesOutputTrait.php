@@ -104,7 +104,7 @@ trait VerifiesOutputTrait
         $name = $this->createTemporaryBladeFile(template: $template);
 
         ob_start();
-        $this->blade->render($name, $data);
+        $this->blade->evaluate($name, $data);
         return ob_get_clean();
     }
 
