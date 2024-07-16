@@ -21,22 +21,10 @@ class TemplateInheritanceTest extends TestCase
 
     public function testOnlyExtends()
     {
-        $layout = <<<LAYOUT
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <title>Layout</title>
-        </head>
-        <body>
-        </body>
-        </html>
-        LAYOUT;
-
-        $this->createTemporaryBladeFile($layout, 'layout');
+        $this->createTemporaryBladeFile(self::LAYOUT, 'layout');
 
         $this->assertSame(
-            $layout,
+            self::LAYOUT,
             $this->renderBlade('@extends("layout")')
         );
     }
@@ -44,49 +32,26 @@ class TemplateInheritanceTest extends TestCase
 
     public function testYieldWithDefaultContent(): void
     {
-
-        $layout = <<<LAYOUT
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <title>Layout</title>
-        </head>
-        <body>%s</body>
-        </html>
-        LAYOUT;
-
         $this->createTemporaryBladeFile(
-            sprintf($layout, "@yield('content', 'Default Content')"),
+            sprintf(self::LAYOUT, "@yield('content', 'Default Content')"),
             'layout'
         );
 
         $this->assertSame(
-            sprintf($layout, "Default Content"),
+            sprintf(self::LAYOUT, "Default Content"),
             $this->renderBlade('@extends("layout")')
         );
     }
 
     public function testYieldWithSection(): void
     {
-        $layout = <<<LAYOUT
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <title>Layout</title>
-        </head>
-        <body>%s</body>
-        </html>
-        LAYOUT;
-
         $this->createTemporaryBladeFile(
-            sprintf($layout, "@yield('content')"),
+            sprintf(self::LAYOUT, "@yield('content')"),
             'layout'
         );
 
         $this->assertSame(
-            sprintf($layout, " Section Content "),
+            sprintf(self::LAYOUT, " Section Content "),
             $this->renderBlade('@extends("layout") @section("content") Section Content @endsection')
         );
     }
