@@ -28,9 +28,11 @@ class TemplateInheritanceRenderer
         return  $fallbackContent;
     }
 
-    public function startSection(string $section): void
+    public function startSection(string $section, string $inlineContent = ''): void
     {
-        ob_start();
+        if (!$inlineContent) {
+            ob_start();
+        }
 
         $this->currentSection = $section;
 
@@ -39,7 +41,7 @@ class TemplateInheritanceRenderer
         }
 
         $this->sections[$section] = (object) [
-            'content' => '',
+            'content' => $inlineContent ? $inlineContent : '',
             'defaultContent' => '',
         ];
     }

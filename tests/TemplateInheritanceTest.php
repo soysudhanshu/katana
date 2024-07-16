@@ -56,6 +56,32 @@ class TemplateInheritanceTest extends TestCase
         );
     }
 
+    public function testInlineSectionDirective(): void
+    {
+        $this->createTemporaryBladeFile(
+            sprintf(self::LAYOUT, "@yield('content')"),
+            'layout'
+        );
+
+        $this->assertSame(
+            sprintf(self::LAYOUT, "Section Content"),
+            $this->renderBlade("@extends('layout') @section('content', 'Section Content')")
+        );
+    }
+
+    public function testInlineSectionDirectiveWithShow(): void
+    {
+        $this->createTemporaryBladeFile(
+            sprintf(self::LAYOUT, "@section('content')@show"),
+            'layout'
+        );
+
+        $this->assertSame(
+            sprintf(self::LAYOUT, "Section Content"),
+            $this->renderBlade("@extends('layout') @section('content', 'Section Content')")
+        );
+    }
+
     public function testSectionDoesntOutputByDefault(): void
     {
         $this->createTemporaryBladeFile(
