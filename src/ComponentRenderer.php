@@ -82,21 +82,7 @@ class ComponentRenderer
 
         $component = $this->getLastComponent();
 
-        $component->slot = new class($slot) implements HtmlableInterface
-        {
-            public function __construct(private string $slot)
-            {
-            }
-            public function toHtml(): string
-            {
-                return $this->slot;
-            }
-
-            public function __toString(): string
-            {
-                return $this->toHtml();
-            }
-        };
+        $component->slot =  new Slot($slot, new Attributes([]));
 
         $rendered = $this->blade->render(
             $component->name,

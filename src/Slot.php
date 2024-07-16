@@ -26,4 +26,14 @@ class Slot implements HtmlableInterface
     {
         return $this->toHtml();
     }
+
+    /**
+     * Determine if the slot is empty.
+     *
+     * @return boolean
+     */
+    public function isEmpty(): bool
+    {
+        return trim($this->slot) === '';
+    }
 }

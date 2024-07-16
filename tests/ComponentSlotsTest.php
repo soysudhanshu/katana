@@ -71,8 +71,26 @@ class ComponentSlotsTest extends TestCase
             "<div class='card'> Maria's Guide to the Galaxy " .
                 "<article> <p>Don't Panic</p> </article> " .
                 "<footer> That's all, folks! </footer> " .
-            "</div>",
+                "</div>",
             $this->removeIndentation($this->renderBlade($blade))
+        );
+    }
+
+    public function testEmptyMethod(): void
+    {
+        $this->createComponent(
+            'card',
+            "<div class='card'>@unless(\$slot->isEmpty()) {{ \$slot }} with some additional content @endunless</div>"
+        );
+
+        $this->assertEquals(
+            "<div class='card'></div>",
+            $this->renderBlade('<x-card></x-card>')
+        );
+
+        $this->assertEquals(
+            "<div class='card'> I am slotted with some additional content </div>",
+            $this->renderBlade('<x-card>I am slotted</x-card>')
         );
     }
 }
