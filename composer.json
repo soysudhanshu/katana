@@ -2,7 +2,8 @@
     "name": "soysudhanshu/katana",
     "description": "Stadalone version of laravel Blade",
     "type": "library",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Blade\\": "src/",
