@@ -3,3 +3,5 @@
 tmp
 .phpunit.result.cache
 public
+.phpunit.cache
+coverage
