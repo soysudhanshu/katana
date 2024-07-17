@@ -126,30 +126,6 @@ class Compiler
         return $template;
     }
 
-
-    protected function compileComponentTags(string $template): string
-    {
-        $regex = "/<x-(?'name'[a-z\.-]+)>/";
-
-        $stack = [];
-
-        do {
-            $template = preg_replace_callback(
-                $regex,
-                function ($matches) {
-                    $name = "components." . $matches['name'];
-
-                    $this->blade->compile($name);
-
-                    return "<?php (new Blade\Component('$name'))->render(); ?>";
-                },
-                $template
-            );
-        } while (preg_match($regex, $template));
-
-        return $template;
-    }
-
     protected function compileCommentDirective(string $template)
     {
         return preg_replace("/{{--([\s]*?(.|\s)*?[\s]*?)--}}/", '', $template);
