@@ -1,4 +1,5 @@
 # Katana
+[![Tests](https://github.com/soysudhanshu/katana/actions/workflows/tests.yml/badge.svg)](https://github.com/soysudhanshu/katana/actions/workflows/tests.yml)
 
 Allows you to library provides functionality to render Laravel Blade templates in any PHP project, without requiring the full Laravel framework.
 
