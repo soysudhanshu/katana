@@ -8,6 +8,7 @@ class CompileAtRules
 
     protected bool $switchOpen = false;
     protected bool $switchFirstCaseClosed = false;
+    protected bool $usesTemplateInheritance = false;
 
     public function __construct(protected string $content)
     {
@@ -16,7 +17,7 @@ class CompileAtRules
 
     public function compile(): string
     {
-        $statementRegex = "/(@|)@(?'directive'[a-z]+)\s*(?'expression'\((?:\s|.)*?\))?/";
+        $statementRegex = "/(@|)@(?'directive'[a-z]+)\s*(?'expression'\((?:\s|.)*?\))?/i";
 
         $matches = [];
 
@@ -70,6 +71,10 @@ class CompileAtRules
             }
 
             $this->content = $this->compileDirective($directive, $this->content);
+        }
+
+        if ($this->usesTemplateInheritance) {
+            $this->content .= $this->endExtends();
         }
 
         return $this->content;
@@ -285,5 +290,52 @@ class CompileAtRules
     protected function compileEndwhile(string $expression): string
     {
         return "<?php endwhile; ?>";
+    }
+
+    protected function compileExtends(string $expression): string
+    {
+        $this->usesTemplateInheritance = true;
+
+        return "<?php \$template_renderer->extends({$expression}); ?>";
+    }
+
+    protected function endExtends(): string
+    {
+        return "<?php \$template_renderer->output(); ?>";
+    }
+
+    protected function compileYield(string $expression): string
+    {
+        return "<?php echo \$template_renderer->yield{$expression}; ?>";
+    }
+
+    protected function compileSection(string $expression): string
+    {
+        return "<?php \$template_renderer->startSection{$expression}; ?>";
+    }
+
+    protected function compileEndsection(string $expression): string
+    {
+        return "<?php \$template_renderer->endSection(); ?>";
+    }
+
+    protected function compileShow(string $expression): string
+    {
+        return "<?php echo \$template_renderer->outputSection(); ?>";
+    }
+
+    protected function compileParent(string $expression): string
+    {
+        return "### DEFAULT SECTION CONTENT ###";
+    }
+
+    protected function compileHasSection(string $expression): string
+    {
+        return "<?php if(\$template_renderer->hasSection{$expression}): ?>";
+    }
+
+    protected function compileSectionMissing(string $expression): string
+    {
+        return "<?php if(!\$template_renderer->hasSection{$expression}): ?>";
     }
 }

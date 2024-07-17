@@ -23,6 +23,71 @@ $blade = $blade = new Blade(__DIR__, __DIR__ . '/.cache');
 echo $blade->render('hello', ['name' => 'Jhon Doe']);
 ```
 
+## Layouts
+
+### Template Inheritance - ✅
+
+Template inheritance allows you to create layouts by defining a master template that can be extended by child templates.
+
+```blade
+{{-- layouts/app.blade.php --}}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>App Name - @yield('title')</title>
+    </head>
+    <body>
+        <main>
+            @yield('content')
+        </main>
+        <aside>
+            @yield('sidebar')
+        </aside>
+    </body>
+</html>
+```
+
+```blade
+{{-- blog-post.blade.php --}}
+
+@extends('layouts.app')
+
+@section('title', 'Home Page')
+
+@section('content')
+    <article>
+        <h1>Blog Post</h1>
+        <p>This is the blog post content.</p>
+    </article>
+@endsection
+
+@section('sidebar')
+    @parent
+
+    <h3>Related Posts</h3>
+    <ul>
+        <li>Post 1</li>
+        <li>Post 2</li>
+        <li>Post 3</li>
+    </ul>
+@endsection
+```
+
+#### Supported Directives
+
+| Directive         | Description                                    | Status |
+| ----------------- | ---------------------------------------------- | ------ |
+| `@extends`        | Directive to extend layout                     | ✅     |
+| `@yield`          | Outputs a section content                      | ✅     |
+| `@section`        | Defines a section content                      | ✅     |
+| `@endsection`     | Defined a end of section content               | ✅     |
+| `@show`           | Outputs a section content immediately          | ✅     |
+| `@parent`         | Outputs the content of the parent section      | ✅     |
+| `@hasSection`     | Determines if section content has been defined | ✅     |
+| `@sectionMissing` | Determines if section content is missing       | ✅     |
+
+
 ## Feature List
 
 ### Blade Directives
@@ -93,16 +158,14 @@ echo $blade->render('hello', ['name' => 'Jhon Doe']);
 | `{{ $attributes->get() }}`                           |             | ✅     |
 | `Default {{ $slot }}`                                |             | ✅     |
 | `Name slots {{ $customSlot }}`                       |             | ✅     |
-| `$slot->isEmpty()`                                   |             | ❌     |
+| `$slot->isEmpty()`                                   |             | ✅     |
 | `$slot->hasActualContent()`                          |             | ❌     |
-| `$slot->isEmpty()`                                   |             | ❌     |
-| `$slot->isEmpty()`                                   |             | ❌     |
 | `Scoped Slots`                                       |             | ❌     |
 | `Slot Attributes`                                    |             | ❌     |
 | `Dynamic Components`                                 |             | ❌     |
 | `Anonymous Index Components`                         |             | ❌     |
 
-### Templating
+### Directives
 
 | Directive         | Description | Status |
 | ----------------- | ----------- | ------ |
@@ -110,8 +173,6 @@ echo $blade->render('hello', ['name' => 'Jhon Doe']);
 | `@guest`          |             | ❌     |
 | `@production`     |             | ❌     |
 | `@env`            |             | ❌     |
-| `@hasSection`     |             | ❌     |
-| `@sectionMissing` |             | ❌     |
 | `@include`        |             | ❌     |
 | `@session`        |             | ❌     |
 | `@checked`        |             | ❌     |
