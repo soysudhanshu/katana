@@ -156,4 +156,18 @@ class Attributes implements HtmlableInterface, IteratorAggregate
 
         return $this;
     }
+
+    public function whereStartsWith(string $needle): static
+    {
+        $this->filter(fn (string $key) => str_starts_with($key, $needle));
+
+        return $this;
+    }
+
+    public function whereDoesntStartWith(string $needle): static
+    {
+        $this->filter(fn (string $key) => !str_starts_with($key, $needle));
+
+        return $this;
+    }
 }

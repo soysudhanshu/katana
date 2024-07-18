@@ -148,4 +148,30 @@ class ComponentAttributeBagTest extends TestCase
             $this->renderBlade('<x-alert type="warning" data-type-full="alert-warning" aria-label="Clicky ti click"/>')
         );
     }
+
+    public function testWhereStartsWithMethod()
+    {
+        $this->createComponent(
+            'alert',
+            '<div {{ $attributes->whereStartsWith("type") }}></div>'
+        );
+
+        $this->assertSame(
+            "<div type='warning'></div>",
+            $this->renderBlade('<x-alert type="warning" data-type-full="alert-warning" aria-label="Clicky ti click"/>')
+        );
+    }
+
+    public function testDoesntWhereStartWithMethod()
+    {
+        $this->createComponent(
+            'alert',
+            '<div {{ $attributes->whereDoesntStartWith("type") }}></div>'
+        );
+
+        $this->assertSame(
+            "<div color='alert-warning' label='Clicky ti click'></div>",
+            $this->renderBlade('<x-alert type="warning" color="alert-warning" label="Clicky ti click"/>')
+        );
+    }
 }
