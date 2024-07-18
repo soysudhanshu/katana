@@ -135,4 +135,17 @@ class ComponentAttributeBagTest extends TestCase
             $this->renderBlade('<x-alert/>')
         );
     }
+
+    public function testFilterMethod()
+    {
+        $this->createComponent(
+            'alert',
+            '<div {{ $attributes->filter(fn (string $key, string $value) => str_contains($key, "type")) }}></div>'
+        );
+
+        $this->assertSame(
+            "<div type='warning'></div>",
+            $this->renderBlade('<x-alert type="warning" data-type-full="alert-warning" aria-label="Clicky ti click"/>')
+        );
+    }
 }
