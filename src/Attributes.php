@@ -39,8 +39,16 @@ class Attributes implements HtmlableInterface, IteratorAggregate
 
             if (!isset($this->attributes[$key])) {
                 $this->attributes[$key] = '';
-            } else {
-                $value = " $value";
+            }
+
+            if ($key === 'class') {
+                $this->class($value);
+                continue;
+            }
+
+            if ($value instanceof AppendableAttributeValue) {
+                $this->attributes[$key] = $value . $this->attributes[$key];
+                continue;
             }
 
             $this->attributes[$key] .= $value;
@@ -166,5 +174,16 @@ class Attributes implements HtmlableInterface, IteratorAggregate
     public function first(): static
     {
         return new static(array_slice($this->attributes, 0, 1, true));
+    }
+
+    /**
+     * Prepends a value to the attribute.
+     *
+     * @param string $value
+     * @return AppendableAttributeValue
+     */
+    public function prepends(string $value): AppendableAttributeValue
+    {
+        return new AppendableAttributeValue($value);
     }
 }

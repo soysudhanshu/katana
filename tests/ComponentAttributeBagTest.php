@@ -188,6 +188,19 @@ class ComponentAttributeBagTest extends TestCase
         );
     }
 
+    public function testPrependsMethod(): void
+    {
+        $this->createComponent(
+            "alert",
+            '<div {{ $attributes->merge( ["aria-label" => $attributes->prepends("hello ")] ) }}></div>'
+        );
+
+        $this->assertSame(
+            "<div aria-label='hello Clicky ti click'></div>",
+            $this->renderBlade('<x-alert aria-label="Clicky ti click"/>')
+        );
+    }
+
     public function testMultiWordAttributes(): void
     {
         $this->createComponent(
