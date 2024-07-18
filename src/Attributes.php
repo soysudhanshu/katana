@@ -25,7 +25,7 @@ class Attributes implements HtmlableInterface, IteratorAggregate
         $this->attributes['class'] = sprintf(
             "%s %s",
             $this->attributes['class'],
-            implode(" ", Blade::getApplicableClasses($classes))
+            implode(" ", Blade::filterConditionalValues($classes))
         );
 
         $this->attributes['class'] = trim($this->attributes['class']);
