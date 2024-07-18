@@ -108,6 +108,7 @@ class ComponentRenderer
          * Setup remaining props and remove
          * them from the attributes array.
          */
+        $propsKeys = [];
         foreach ($component->props as $key => $prop) {
             if (is_int($key)) {
                 $key = $prop;
@@ -118,13 +119,10 @@ class ComponentRenderer
                 $data[$key] = $prop;
             }
 
-            if ($attributes->has($key)) {
-                $attributes->except($key);
-            }
+            $propsKeys[] = $key;
         }
 
-
-        $data['attributes'] = $attributes;
+        $data['attributes'] = $attributes->except($propsKeys);;
         $data['slot'] = $component->slot;
         $data['component_renderer'] = $this;
 

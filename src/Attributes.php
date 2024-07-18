@@ -58,11 +58,7 @@ class Attributes implements HtmlableInterface, IteratorAggregate
     {
         $attributes = is_string($attributes) ? [$attributes] : $attributes;
 
-        foreach ($attributes as $attribute) {
-            unset($this->attributes[$attribute]);
-        }
-
-        return $this;
+        return $this->filter(fn (string $key) => !in_array($key, $attributes));
     }
 
     public function __toString(): string
@@ -148,33 +144,27 @@ class Attributes implements HtmlableInterface, IteratorAggregate
 
     public function filter(callable $callback): static
     {
-        $this->attributes = array_filter(
+        $attributes = array_filter(
             $this->attributes,
             fn (string $value, string $key) => $callback($key, $value),
             ARRAY_FILTER_USE_BOTH
         );
 
-        return $this;
+        return new Attributes($attributes);
     }
 
     public function whereStartsWith(string $needle): static
     {
-        $this->filter(fn (string $key) => str_starts_with($key, $needle));
-
-        return $this;
+        return $this->filter(fn (string $key) => str_starts_with($key, $needle));
     }
 
     public function whereDoesntStartWith(string $needle): static
     {
-        $this->filter(fn (string $key) => !str_starts_with($key, $needle));
-
-        return $this;
+        return $this->filter(fn (string $key) => !str_starts_with($key, $needle));
     }
 
     public function first(): static
     {
-        $this->attributes = array_slice($this->attributes, 0, 1, true);
-
-        return $this;
+        return new static(array_slice($this->attributes, 0, 1, true));
     }
 }
