@@ -170,4 +170,11 @@ class Attributes implements HtmlableInterface, IteratorAggregate
 
         return $this;
     }
+
+    public function first(): static
+    {
+        $this->attributes = array_slice($this->attributes, 0, 1, true);
+
+        return $this;
+    }
 }

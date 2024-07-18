@@ -174,4 +174,17 @@ class ComponentAttributeBagTest extends TestCase
             $this->renderBlade('<x-alert type="warning" color="alert-warning" label="Clicky ti click"/>')
         );
     }
+
+    public function testFirstMethod()
+    {
+        $this->createComponent(
+            'alert',
+            '<div {{ $attributes->first() }}></div>'
+        );
+
+        $this->assertSame(
+            "<div type='warning'></div>",
+            $this->renderBlade('<x-alert type="warning" color="alert-warning" label="Clicky ti click"/>')
+        );
+    }
 }
