@@ -1,4 +1,5 @@
 # Katana
+
 [![Tests](https://github.com/soysudhanshu/katana/actions/workflows/tests.yml/badge.svg)](https://github.com/soysudhanshu/katana/actions/workflows/tests.yml)
 
 Allows you to library provides functionality to render Laravel Blade templates in any PHP project, without requiring the full Laravel framework.
@@ -88,7 +89,6 @@ Template inheritance allows you to create layouts by defining a master template 
 | `@hasSection`     | Determines if section content has been defined | ✅     |
 | `@sectionMissing` | Determines if section content is missing       | ✅     |
 
-
 ## Feature List
 
 ### Blade Directives
@@ -131,7 +131,7 @@ Template inheritance allows you to create layouts by defining a master template 
 | Directive | Description       | Status |
 | --------- | ----------------- | ------ |
 | `@class`  | Conditional class | ✅     |
-| `@style`  | Conditional style | ❌     |
+| `@style`  | Conditional style | ✅     |
 
 ### Components
 
@@ -168,26 +168,26 @@ Template inheritance allows you to create layouts by defining a master template 
 
 ### Directives
 
-| Directive         | Description | Status |
-| ----------------- | ----------- | ------ |
-| `@auth`           |             | ❌     |
-| `@guest`          |             | ❌     |
-| `@production`     |             | ❌     |
-| `@env`            |             | ❌     |
-| `@include`        |             | ❌     |
-| `@session`        |             | ❌     |
-| `@checked`        |             | ❌     |
-| `@disabled`       |             | ❌     |
-| `@readonly`       |             | ❌     |
-| `@required`       |             | ❌     |
-| `@includeIf`      |             | ❌     |
-| `@includeWhen`    |             | ❌     |
-| `@includeUnless`  |             | ❌     |
-| `@includeFirst`   |             | ❌     |
-| `@each`           |             | ❌     |
-| `@once`           |             | ❌     |
-| `@push`           |             | ❌     |
-| `@pushOnce`       |             | ❌     |
-| `@prependOnce`    |             | ❌     |
-| `@php`            |             | ✅     |
-| `@use`            |             | ❌     |
+| Directive        | Description | Status |
+| ---------------- | ----------- | ------ |
+| `@auth`          |             | ❌     |
+| `@guest`         |             | ❌     |
+| `@production`    |             | ❌     |
+| `@env`           |             | ❌     |
+| `@include`       |             | ❌     |
+| `@session`       |             | ❌     |
+| `@checked`       |             | ❌     |
+| `@disabled`      |             | ❌     |
+| `@readonly`      |             | ❌     |
+| `@required`      |             | ❌     |
+| `@includeIf`     |             | ❌     |
+| `@includeWhen`   |             | ❌     |
+| `@includeUnless` |             | ❌     |
+| `@includeFirst`  |             | ❌     |
+| `@each`          |             | ❌     |
+| `@once`          |             | ❌     |
+| `@push`          |             | ❌     |
+| `@pushOnce`      |             | ❌     |
+| `@prependOnce`   |             | ❌     |
+| `@php`           |             | ✅     |
+| `@use`           |             | ❌     |

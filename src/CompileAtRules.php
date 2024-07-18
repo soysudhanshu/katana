@@ -174,6 +174,11 @@ class CompileAtRules
         return "<?php echo \Blade\Blade::classAttribute({$expression}); ?>";
     }
 
+    protected function compileStyle(string $expression): string
+    {
+        return "<?php echo \Blade\Blade::styleAttribute({$expression}); ?>";
+    }
+
     protected function compileContinue(string $expression): string
     {
         return "<?php continue; ?>";

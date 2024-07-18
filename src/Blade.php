@@ -72,27 +72,27 @@ final class Blade
     }
 
     /**
-     * Filters conditional classes and
-     * returns only the applicable classes.
+     * Filters conditional values.
      *
-     * @param array $classes
-     * @return array
+     * @param string[] $values
+     * @return string[]
      */
-    public static function getApplicableClasses(array $classes): array
+    public static function filterConditionalValues(array $values): array
     {
         $applicable = [];
 
-        foreach ($classes as $key => $value) {
+        foreach ($values as $key => $value) {
             if (is_int($key)) {
                 $applicable[] = $value;
-            } else {
-                if ($value) {
-                    $applicable[] = $key;
-                }
+                continue;
+            }
+
+            if ($value) {
+                $applicable[] = $key;
             }
         }
 
-        return  $applicable;
+        return $applicable;
     }
 
     /**
@@ -105,7 +105,21 @@ final class Blade
     {
         return sprintf(
             'class="%s"',
-            implode(' ', static::getApplicableClasses($classes))
+            implode(' ', static::filterConditionalValues($classes))
+        );
+    }
+
+    public static function styleAttribute(array $styles): string
+    {
+        $styles = static::filterConditionalValues($styles);
+
+        $styles = array_map(function ($style) {
+            return rtrim($style, ';') . ';';
+        }, $styles);
+
+        return sprintf(
+            'style="%s"',
+            implode(' ', static::filterConditionalValues($styles))
         );
     }
 }
