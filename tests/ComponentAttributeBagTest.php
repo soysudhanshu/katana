@@ -144,7 +144,7 @@ class ComponentAttributeBagTest extends TestCase
         );
 
         $this->assertSame(
-            "<div type='warning'></div>",
+            "<div type='warning' data-type-full='alert-warning'></div>",
             $this->renderBlade('<x-alert type="warning" data-type-full="alert-warning" aria-label="Clicky ti click"/>')
         );
     }
@@ -185,6 +185,19 @@ class ComponentAttributeBagTest extends TestCase
         $this->assertSame(
             "<div type='warning'></div>",
             $this->renderBlade('<x-alert type="warning" color="alert-warning" label="Clicky ti click"/>')
+        );
+    }
+
+    public function testMultiWordAttributes(): void
+    {
+        $this->createComponent(
+            "alert",
+            '<div {{ $attributes }}></div>'
+        );
+
+        $this->assertSame(
+            "<div aria-label='Clicky ti click'></div>",
+            $this->renderBlade('<x-alert aria-label="Clicky ti click"/>')
         );
     }
 }

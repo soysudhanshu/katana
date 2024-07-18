@@ -101,7 +101,7 @@ class ComponentRenderer
 
 
         foreach ($attributes as $key => $value) {
-            $data[$key] = $value;
+            $data[toCamelCase($key)] = $value;
         }
 
         /**

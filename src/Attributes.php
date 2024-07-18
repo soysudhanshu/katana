@@ -90,7 +90,7 @@ class Attributes implements HtmlableInterface, IteratorAggregate
 
     public function get(string $key)
     {
-        return $this->attributes[toCamelCase($key)] ?? null;
+        return $this->attributes[$key] ?? null;
     }
 
     public function toArray(): array
@@ -116,7 +116,7 @@ class Attributes implements HtmlableInterface, IteratorAggregate
         $keys = is_string($keys) ? [$keys] : $keys;
 
         foreach ($keys as $key) {
-            if (!array_key_exists(toCamelCase($key), $this->attributes)) {
+            if (!array_key_exists($key, $this->attributes)) {
                 $found = false;
                 break;
             }
@@ -136,7 +136,7 @@ class Attributes implements HtmlableInterface, IteratorAggregate
         $found = false;
 
         foreach ($keys as $key) {
-            if (array_key_exists(toCamelCase($key), $this->attributes)) {
+            if (array_key_exists($key, $this->attributes)) {
                 $found = true;
                 break;
             }
