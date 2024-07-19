@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Blade\Attributes;
 use PHPUnit\Framework\TestCase;
 
 class ComponentAttributeBagTest extends TestCase
@@ -212,5 +213,32 @@ class ComponentAttributeBagTest extends TestCase
             "<div aria-label='Clicky ti click'></div>",
             $this->renderBlade('<x-alert aria-label="Clicky ti click"/>')
         );
+    }
+
+
+    public function testMergeDoesntMutateOriginalAttributeBag(): void
+    {
+        $original = ['data-first-name' => 'Maria'];
+
+        $attributes = new Attributes($original);
+        $merged = $attributes->merge(['data-last-name' => 'Jose']);
+
+        $this->assertInstanceOf(Attributes::class, $merged);
+        $this->assertNotSame($attributes, $merged);
+
+        $this->assertSame($original, $attributes->toArray());
+    }
+
+    public function testClassDoesntMutateOriginalAttributeBag(): void
+    {
+        $original = ['class' => 'alert'];
+
+        $attributes = new Attributes($original);
+        $classed = $attributes->class('hidden');
+
+        $this->assertInstanceOf(Attributes::class, $classed);
+        $this->assertNotSame($attributes, $classed);
+
+        $this->assertSame($original, $attributes->toArray());
     }
 }
