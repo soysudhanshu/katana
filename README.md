@@ -149,11 +149,11 @@ Template inheritance allows you to create layouts by defining a master template 
 | `{{ $attributes->merge() }}`                         |             | ✅     |
 | `{{ $attributes->class() }}`                         |             | ✅     |
 | `{{ $attributes->class() }} Conditional`             |             | ✅     |
-| `{{ $attributes->prepends() }}`                      |             | ❌     |
-| `{{ $attributes->filter() }}`                        |             | ❌     |
-| `{{ $attributes->whereStartsWith() }}`               |             | ❌     |
-| `{{ $attributes->whereDoesntStartWith() }}`          |             | ❌     |
-| `{{ $attributes->whereDoesntStartWith()->first() }}` |             | ❌     |
+| `{{ $attributes->prepends() }}`                      |             | ✅     |
+| `{{ $attributes->filter() }}`                        |             | ✅     |
+| `{{ $attributes->whereStartsWith() }}`               |             | ✅     |
+| `{{ $attributes->whereDoesntStartWith() }}`          |             | ✅     |
+| `{{ $attributes->whereDoesntStartWith()->first() }}` |             | ✅     |
 | `{{ $attributes->has() }}`                           |             | ✅     |
 | `{{ $attributes->hasAny() }}`                        |             | ✅     |
 | `{{ $attributes->get() }}`                           |             | ✅     |

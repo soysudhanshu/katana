@@ -85,7 +85,7 @@ class ComponentTagsCompiler
             )/x
             REGEX,
             function ($matches) {
-                $name = $this->toCamelCase($matches['name']);
+                $name = $matches['name'];
                 $value = $matches['value'] ?? null;
 
                 /**

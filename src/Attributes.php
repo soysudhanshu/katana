@@ -14,39 +14,57 @@ class Attributes implements HtmlableInterface, IteratorAggregate
         $this->attributes = $attributes;
     }
 
-    public function class(string | array $classes): static
+    public function class(string | array $defaultClasses): static
     {
-        if (empty($this->attributes['class'])) {
-            $this->attributes['class'] = '';
-        }
-
-        $classes =  is_string($classes) ? explode(" ", $classes) : $classes;
-
-        $this->attributes['class'] = sprintf(
-            "%s %s",
-            $this->attributes['class'],
-            implode(" ", Blade::filterConditionalValues($classes))
+        return new static(
+            array_merge(
+                $this->attributes,
+                ['class' => $this->mergeClass($defaultClasses)]
+            )
         );
-
-        $this->attributes['class'] = trim($this->attributes['class']);
-
-        return $this;
     }
 
-    public function merge(array $attributes): static
+    private function mergeClass(string | array $defaultClasses): string
     {
-        foreach ($attributes as $key => $value) {
+        $defaultClasses =  is_string($defaultClasses) ? explode(" ", $defaultClasses) : $defaultClasses;
 
-            if (!isset($this->attributes[$key])) {
-                $this->attributes[$key] = '';
-            } else {
-                $value = " $value";
+        $classes = $this->attributes['class'] ?? '';
+
+        $classes = sprintf(
+            "%s %s",
+            $classes,
+            implode(" ", Blade::filterConditionalValues($defaultClasses))
+        );
+
+        $classes = trim($classes);
+
+        return $classes;
+    }
+
+    public function merge(array $defaultAttributes): static
+    {
+        $attributes = $this->attributes;
+
+        foreach ($defaultAttributes as $key => $value) {
+
+            if (!isset($attributes[$key])) {
+                $attributes[$key] = '';
             }
 
-            $this->attributes[$key] .= $value;
+            if ($key === 'class') {
+                $attributes['class'] = $this->mergeClass($value);
+                continue;
+            }
+
+            if ($value instanceof AppendableAttributeValue) {
+                $attributes[$key] = $value . $attributes[$key];
+                continue;
+            }
+
+            $attributes[$key] .= $value;
         }
 
-        return $this;
+        return new static($attributes);
     }
 
     /**
@@ -58,11 +76,7 @@ class Attributes implements HtmlableInterface, IteratorAggregate
     {
         $attributes = is_string($attributes) ? [$attributes] : $attributes;
 
-        foreach ($attributes as $attribute) {
-            unset($this->attributes[$attribute]);
-        }
-
-        return $this;
+        return $this->filter(fn (string $key) => !in_array($key, $attributes));
     }
 
     public function __toString(): string
@@ -90,7 +104,7 @@ class Attributes implements HtmlableInterface, IteratorAggregate
 
     public function get(string $key)
     {
-        return $this->attributes[toCamelCase($key)] ?? null;
+        return $this->attributes[$key] ?? null;
     }
 
     public function toArray(): array
@@ -116,7 +130,7 @@ class Attributes implements HtmlableInterface, IteratorAggregate
         $keys = is_string($keys) ? [$keys] : $keys;
 
         foreach ($keys as $key) {
-            if (!array_key_exists(toCamelCase($key), $this->attributes)) {
+            if (!array_key_exists($key, $this->attributes)) {
                 $found = false;
                 break;
             }
@@ -136,12 +150,50 @@ class Attributes implements HtmlableInterface, IteratorAggregate
         $found = false;
 
         foreach ($keys as $key) {
-            if (array_key_exists(toCamelCase($key), $this->attributes)) {
+            if (array_key_exists($key, $this->attributes)) {
                 $found = true;
                 break;
             }
         }
 
         return $found;
+    }
+
+
+    public function filter(callable $callback): static
+    {
+        $attributes = array_filter(
+            $this->attributes,
+            fn (string $value, string $key) => $callback($key, $value),
+            ARRAY_FILTER_USE_BOTH
+        );
+
+        return new static($attributes);
+    }
+
+    public function whereStartsWith(string $needle): static
+    {
+        return $this->filter(fn (string $key) => str_starts_with($key, $needle));
+    }
+
+    public function whereDoesntStartWith(string $needle): static
+    {
+        return $this->filter(fn (string $key) => !str_starts_with($key, $needle));
+    }
+
+    public function first(): static
+    {
+        return new static(array_slice($this->attributes, 0, 1, true));
+    }
+
+    /**
+     * Prepends a value to the attribute.
+     *
+     * @param string $value
+     * @return AppendableAttributeValue
+     */
+    public function prepends(string $value): AppendableAttributeValue
+    {
+        return new AppendableAttributeValue($value);
     }
 }

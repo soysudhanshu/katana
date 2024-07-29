@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Blade\Attributes;
 use PHPUnit\Framework\TestCase;
 
 class ComponentAttributeBagTest extends TestCase
@@ -134,5 +135,110 @@ class ComponentAttributeBagTest extends TestCase
             '',
             $this->renderBlade('<x-alert/>')
         );
+    }
+
+    public function testFilterMethod()
+    {
+        $this->createComponent(
+            'alert',
+            '<div {{ $attributes->filter(fn (string $key, string $value) => str_contains($key, "type")) }}></div>'
+        );
+
+        $this->assertSame(
+            "<div type='warning' data-type-full='alert-warning'></div>",
+            $this->renderBlade('<x-alert type="warning" data-type-full="alert-warning" aria-label="Clicky ti click"/>')
+        );
+    }
+
+    public function testWhereStartsWithMethod()
+    {
+        $this->createComponent(
+            'alert',
+            '<div {{ $attributes->whereStartsWith("type") }}></div>'
+        );
+
+        $this->assertSame(
+            "<div type='warning'></div>",
+            $this->renderBlade('<x-alert type="warning" data-type-full="alert-warning" aria-label="Clicky ti click"/>')
+        );
+    }
+
+    public function testDoesntWhereStartWithMethod()
+    {
+        $this->createComponent(
+            'alert',
+            '<div {{ $attributes->whereDoesntStartWith("type") }}></div>'
+        );
+
+        $this->assertSame(
+            "<div color='alert-warning' label='Clicky ti click'></div>",
+            $this->renderBlade('<x-alert type="warning" color="alert-warning" label="Clicky ti click"/>')
+        );
+    }
+
+    public function testFirstMethod()
+    {
+        $this->createComponent(
+            'alert',
+            '<div {{ $attributes->first() }}></div>'
+        );
+
+        $this->assertSame(
+            "<div type='warning'></div>",
+            $this->renderBlade('<x-alert type="warning" color="alert-warning" label="Clicky ti click"/>')
+        );
+    }
+
+    public function testPrependsMethod(): void
+    {
+        $this->createComponent(
+            "alert",
+            '<div {{ $attributes->merge( ["aria-label" => $attributes->prepends("hello ")] ) }}></div>'
+        );
+
+        $this->assertSame(
+            "<div aria-label='hello Clicky ti click'></div>",
+            $this->renderBlade('<x-alert aria-label="Clicky ti click"/>')
+        );
+    }
+
+    public function testMultiWordAttributes(): void
+    {
+        $this->createComponent(
+            "alert",
+            '<div {{ $attributes }}></div>'
+        );
+
+        $this->assertSame(
+            "<div aria-label='Clicky ti click'></div>",
+            $this->renderBlade('<x-alert aria-label="Clicky ti click"/>')
+        );
+    }
+
+
+    public function testMergeDoesntMutateOriginalAttributeBag(): void
+    {
+        $original = ['data-first-name' => 'Maria'];
+
+        $attributes = new Attributes($original);
+        $merged = $attributes->merge(['data-last-name' => 'Jose']);
+
+        $this->assertInstanceOf(Attributes::class, $merged);
+        $this->assertNotSame($attributes, $merged);
+
+        $this->assertSame($original, $attributes->toArray());
+    }
+
+    public function testClassDoesntMutateOriginalAttributeBag(): void
+    {
+        $original = ['class' => 'alert'];
+
+        $attributes = new Attributes($original);
+        $classed = $attributes->class('hidden');
+
+        $this->assertInstanceOf(Attributes::class, $classed);
+        $this->assertNotSame($attributes, $classed);
+
+        $this->assertSame($original, $attributes->toArray());
     }
 }

@@ -314,7 +314,7 @@ class ComponentTagsTest extends TestCase
         $this->assertSame(
             "Has Cat Has Dog",
             /**
-             * Remove extra spaces as template 
+             * Remove extra spaces as template
              * will have extra spaces due to formatting
              */
             preg_replace(
