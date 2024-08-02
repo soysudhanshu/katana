@@ -164,7 +164,7 @@ class Attributes implements HtmlableInterface, IteratorAggregate
     {
         $attributes = array_filter(
             $this->attributes,
-            fn (string $value, string $key) => $callback($key, $value),
+            fn ($value, string $key) => $callback($key, $value),
             ARRAY_FILTER_USE_BOTH
         );
 

@@ -241,4 +241,53 @@ class ComponentAttributeBagTest extends TestCase
 
         $this->assertSame($original, $attributes->toArray());
     }
+    public function testOnlyRendersStringBoolNumbers(): void
+    {
+        $cases = [
+            [
+                'value' => true,
+                'expected' => "<div aria-label='1'></div>",
+            ],
+            [
+                'value' => false,
+                'expected' => "<div aria-label=''></div>",
+            ],
+            [
+                'value' => 1,
+                'expected' => "<div aria-label='1'></div>",
+            ],
+            [
+                'value' => 0,
+                'expected' => "<div aria-label='0'></div>",
+            ],
+            [
+                'value' => ['#data', 'selector'],
+                'expected' => "<div ></div>",
+            ],
+            [
+                'value' => (new class
+                {
+                }),
+                'expected' => "<div ></div>",
+            ]
+        ];
+        $this->createComponent(
+            "alert",
+            '<div {{ $attributes }}></div>'
+        );
+
+        foreach ($cases as $case) {
+            $this->assertSame(
+                $case['expected'],
+                $this->renderBlade(
+                    '<x-alert :aria-label="$value"/>',
+                    [
+                        'value' => $case['value']
+                    ]
+                )
+            );
+        }
+
+        // $this->ex
+    }
 }
