@@ -343,4 +343,10 @@ class CompileAtRules
     {
         return "<?php if(!\$template_renderer->hasSection{$expression}): ?>";
     }
+
+    protected function compileInclude(string $expression): string
+    {
+        return "<?php echo \$template_renderer->withDefault(get_defined_vars())".
+            "->include{$expression}; ?>";
+    }
 }

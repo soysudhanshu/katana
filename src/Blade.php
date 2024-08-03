@@ -37,7 +37,7 @@ final class Blade
 
     public function render(string $view, array $data = []): void
     {
-        extract($data);
+        extract($data, EXTR_SKIP);
 
         $component_renderer = $this->componentRenderer;
         $template_renderer = $this->templateRenderer;
