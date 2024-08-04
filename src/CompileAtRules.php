@@ -343,4 +343,34 @@ class CompileAtRules
     {
         return "<?php if(!\$template_renderer->hasSection{$expression}): ?>";
     }
+
+    protected function compileInclude(string $expression): string
+    {
+        return "<?php echo \$template_renderer->withDefault(get_defined_vars())" .
+            "->include{$expression}; ?>";
+    }
+
+    protected function compileIncludeIf(string $expression): string
+    {
+        return "<?php echo \$template_renderer->withDefault(get_defined_vars())" .
+            "->includeIf{$expression}; ?>";
+    }
+
+    protected function compileIncludeWhen(string $expression): string
+    {
+        return "<?php echo \$template_renderer->withDefault(get_defined_vars())" .
+            "->includeWhen{$expression}; ?>";
+    }
+
+    protected function compileIncludeUnless(string $expression): string
+    {
+        return "<?php echo \$template_renderer->withDefault(get_defined_vars())" .
+            "->includeUnless{$expression}; ?>";
+    }
+
+    protected function compileIncludeFirst(string $expression): string
+    {
+        return "<?php echo \$template_renderer->withDefault(get_defined_vars())" .
+            "->includeFirst{$expression}; ?>";
+    }
 }

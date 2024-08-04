@@ -37,12 +37,17 @@ final class Blade
 
     public function render(string $view, array $data = []): void
     {
-        extract($data);
+        extract($data, EXTR_SKIP);
 
         $component_renderer = $this->componentRenderer;
         $template_renderer = $this->templateRenderer;
 
         include $this->getCachedViewPath($this->compile($view));;
+    }
+
+    public function viewExists(string $name): bool
+    {
+        return file_exists($this->getViewPath($name));
     }
 
     protected function getViewPath(string $name): string

@@ -8,6 +8,7 @@ class TemplateInheritanceRenderer
     protected array $sections = [];
     protected bool $renderingParentLayout = false;
     protected string $currentSection = '';
+    protected ?array $tempContextData = null;
 
     public function __construct(protected Blade $blade)
     {
@@ -108,5 +109,69 @@ class TemplateInheritanceRenderer
         $this->renderingParentLayout = true;
 
         echo $this->blade->render($this->template);
+    }
+
+    public function include(string $template, array $data = [])
+    {
+        $defaultData = $this->tempContextData ?? [];
+        $this->tempContextData = null;
+
+        $this->blade->render(
+            $template,
+            array_merge($defaultData, $data)
+        );
+    }
+
+    public function includeIf(string $template, array $data = []): void
+    {
+        if (!$this->blade->viewExists($template)) {
+            return;
+        }
+
+        $this->include($template, $data);
+    }
+
+    public function includeWhen(bool $condition, string $template, array $data = []): void
+    {
+        if (!$condition) {
+            return;
+        }
+
+        $this->include($template, $data);
+    }
+
+    public function includeUnless(bool $condition, string $template, array $data = []): void
+    {
+        if ($condition) {
+            return;
+        }
+
+        $this->include($template, $data);
+    }
+
+    public function includeFirst(array $views, array $data = []): void
+    {
+        $toRender = null;
+
+        foreach ($views as $view) {
+            if ($this->blade->viewExists($view)) {
+                $toRender = $view;
+                break;
+            }
+        }
+
+        if ($toRender) {
+            $this->include($toRender, $data);
+        }
+    }
+
+    public function withDefault(array $data): static
+    {
+        unset($data['template_renderer']);
+        unset($data['component_renderer']);
+
+        $this->tempContextData = $data;
+
+        return $this;
     }
 }
