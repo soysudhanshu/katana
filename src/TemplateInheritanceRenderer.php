@@ -140,6 +140,15 @@ class TemplateInheritanceRenderer
         $this->include($template, $data);
     }
 
+    public function includeUnless(bool $condition, string $template, array $data = []): void
+    {
+        if ($condition) {
+            return;
+        }
+
+        $this->include($template, $data);
+    }
+
     public function withDefault(array $data): static
     {
         unset($data['template_renderer']);

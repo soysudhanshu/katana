@@ -125,4 +125,48 @@ class IncludeDirectiveTest extends TestCase
             )
         );
     }
+
+
+    public function testIncludeUnlessTrue(): void
+    {
+        $this->createTemporaryBladeFile('This is sub view content', 'subview');
+
+        $this->assertSame(
+            'This is the main view. ',
+            $this->renderBlade('This is the main view. @includeUnless(true, "subview")')
+        );
+    }
+
+    public function testIncludeUnlessFalse(): void
+    {
+        $this->createTemporaryBladeFile('This is sub view content', 'subview');
+
+        $this->assertSame(
+            'This is the main view. This is sub view content',
+            $this->renderBlade('This is the main view. @includeUnless(false, "subview")')
+        );
+    }
+
+    public function testIncludeUnlessWithVariables(): void
+    {
+        $this->createTemporaryBladeFile('Hello {{ $name }}', 'subview');
+
+        $this->assertSame(
+            'This is the main view. Hello John',
+            $this->renderBlade('This is the main view. @includeUnless(false, "subview", ["name" => "John"])')
+        );
+    }
+
+    public function testIncludeUnlessInheritsVariables(): void
+    {
+        $this->createTemporaryBladeFile('Hello {{ $name }}', 'subview');
+
+        $this->assertSame(
+            'This is the main view. Hello John',
+            $this->renderBlade(
+                'This is the main view. @includeUnless(false, "subview")',
+                ['name' => 'John']
+            )
+        );
+    }
 }
