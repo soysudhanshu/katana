@@ -367,4 +367,10 @@ class CompileAtRules
         return "<?php echo \$template_renderer->withDefault(get_defined_vars())" .
             "->includeUnless{$expression}; ?>";
     }
+
+    protected function compileIncludeFirst(string $expression): string
+    {
+        return "<?php echo \$template_renderer->withDefault(get_defined_vars())" .
+            "->includeFirst{$expression}; ?>";
+    }
 }

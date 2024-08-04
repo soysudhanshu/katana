@@ -149,6 +149,22 @@ class TemplateInheritanceRenderer
         $this->include($template, $data);
     }
 
+    public function includeFirst(array $views, array $data = []): void
+    {
+        $toRender = null;
+
+        foreach ($views as $view) {
+            if ($this->blade->viewExists($view)) {
+                $toRender = $view;
+                break;
+            }
+        }
+
+        if ($toRender) {
+            $this->include($toRender, $data);
+        }
+    }
+
     public function withDefault(array $data): static
     {
         unset($data['template_renderer']);

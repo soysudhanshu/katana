@@ -169,4 +169,66 @@ class IncludeDirectiveTest extends TestCase
             )
         );
     }
+
+    public function testIncludeFirst(): void
+    {
+        $this->createTemporaryBladeFile(
+            'This is subview 2.',
+            'view-2',
+        );
+
+        $this->createTemporaryBladeFile(
+            'This is subview 3.',
+            'view-3',
+        );
+
+
+        $this->assertSame(
+            'This is main view. This is subview 2.',
+            $this->renderBlade(
+                'This is main view. @includeFirst(["view-1", "view-2", "view-3"])'
+            )
+        );
+    }
+
+    public function testIncludeFirstWithEmpty(): void
+    {
+        $this->assertSame(
+            'This is main view. ',
+            $this->renderBlade(
+                'This is main view. @includeFirst([])'
+            )
+        );
+    }
+
+    public function testIncludeFirstWithVariables(): void
+    {
+        $this->createTemporaryBladeFile(
+            'Hello, {{ $name }}',
+            'existing-subview',
+        );
+
+        $this->assertSame(
+            'This is main view. Hello, John',
+            $this->renderBlade(
+                'This is main view. @includeFirst(["view-1", "view-2", "existing-subview"], ["name" => "John"])'
+            )
+        );
+    }
+
+    public function testIncludeFirstInheritsVariables(): void
+    {
+        $this->createTemporaryBladeFile(
+            'Hello, {{ $name }}',
+            'existing-subview',
+        );
+
+        $this->assertSame(
+            'This is main view. Hello, John',
+            $this->renderBlade(
+                'This is main view. @includeFirst(["view-1", "view-2", "existing-subview"])',
+                ['name' => 'John']
+            )
+        );
+    }
 }
