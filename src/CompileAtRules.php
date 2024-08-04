@@ -355,4 +355,10 @@ class CompileAtRules
         return "<?php echo \$template_renderer->withDefault(get_defined_vars())" .
             "->includeIf{$expression}; ?>";
     }
+
+    protected function compileIncludeWhen(string $expression): string
+    {
+        return "<?php echo \$template_renderer->withDefault(get_defined_vars())" .
+            "->includeWhen{$expression}; ?>";
+    }
 }

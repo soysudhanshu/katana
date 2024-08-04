@@ -82,4 +82,47 @@ class IncludeDirectiveTest extends TestCase
             $this->renderBlade('This is the main view. @includeIf("non-existing-subview")')
         );
     }
+
+    public function testIncludeWhenTrue(): void
+    {
+        $this->createTemporaryBladeFile('This is sub view content', 'subview');
+
+        $this->assertSame(
+            'This is the main view. This is sub view content',
+            $this->renderBlade('This is the main view. @includeWhen(true, "subview")')
+        );
+    }
+
+    public function testIncludeWhenFalse(): void
+    {
+        $this->createTemporaryBladeFile('This is sub view content', 'subview');
+
+        $this->assertSame(
+            'This is the main view. ',
+            $this->renderBlade('This is the main view. @includeWhen(false, "subview")')
+        );
+    }
+
+    public function testIncludeWhenWithVariables(): void
+    {
+        $this->createTemporaryBladeFile('Hello, {{ $name }}', 'subview');
+
+        $this->assertSame(
+            'This is the main view. Hello, John',
+            $this->renderBlade('This is the main view. @includeWhen(true, "subview", ["name" => "John"])')
+        );
+    }
+
+    public function testIncludeWhenInheritsVariables(): void
+    {
+        $this->createTemporaryBladeFile('Hello, {{ $name }}', 'subview');
+
+        $this->assertSame(
+            'This is the main view. Hello, John',
+            $this->renderBlade(
+                'This is the main view. @includeWhen(true, "subview")',
+                ['name' => 'John']
+            )
+        );
+    }
 }
