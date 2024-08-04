@@ -346,7 +346,13 @@ class CompileAtRules
 
     protected function compileInclude(string $expression): string
     {
-        return "<?php echo \$template_renderer->withDefault(get_defined_vars())".
+        return "<?php echo \$template_renderer->withDefault(get_defined_vars())" .
             "->include{$expression}; ?>";
+    }
+
+    protected function compileIncludeIf(string $expression): string
+    {
+        return "<?php echo \$template_renderer->withDefault(get_defined_vars())" .
+            "->includeIf{$expression}; ?>";
     }
 }

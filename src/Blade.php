@@ -45,6 +45,11 @@ final class Blade
         include $this->getCachedViewPath($this->compile($view));;
     }
 
+    public function viewExists(string $name): bool
+    {
+        return file_exists($this->getViewPath($name));
+    }
+
     protected function getViewPath(string $name): string
     {
         return sprintf(

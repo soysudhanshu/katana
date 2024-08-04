@@ -122,6 +122,15 @@ class TemplateInheritanceRenderer
         );
     }
 
+    public function includeIf(string $template, array $data = []): void
+    {
+        if (!$this->blade->viewExists($template)) {
+            return;
+        }
+
+        $this->include($template, $data);
+    }
+
     public function withDefault(array $data): static
     {
         unset($data['template_renderer']);
