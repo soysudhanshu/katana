@@ -152,4 +152,51 @@ class FormDirectiveTest extends TestCase
             );
         }
     }
+
+    public function testSelectedDirective(): void
+    {
+        $this->assertSame(
+            '<option value="1" selected>One</option>',
+            $this->renderBlade('<option value="1" @selected>One</option>')
+        );
+    }
+
+    public function testSelectedDirectiveWithConditionals(): void
+    {
+        $cases = [
+            [
+                'expected' => '<option value="1" selected>One</option>',
+                'blade' => '<option value="1" @selected(true)>One</option>',
+                'message' => 'The option should be selected when the condition is true',
+            ],
+            [
+                'expected' => '<option value="1" >One</option>',
+                'blade' => '<option value="1" @selected(false)>One</option>',
+                'message' => 'The option should not be selected when the condition is false',
+            ],
+            [
+                'expected' => '<option value="1" >One</option>',
+                'blade' => '<option value="1" @selected(null)>One</option>',
+                'message' => 'The option should not be selected when the condition is null',
+            ],
+            [
+                'expected' => '<option value="1" selected>One</option>',
+                'blade' => '<option value="1" @selected(fn() => true)>One</option>',
+                'message' => 'The option should be selected when the condition is a string that evaluates to true',
+            ],
+            [
+                'expected' => '<option value="1" selected>One</option>',
+                'blade' => '<option value="1" @selected(1 == "1")>One</option>',
+                'message' => 'The option should be selected when the condition is a string that evaluates to true',
+            ]
+        ];
+
+        foreach ($cases as $case) {
+            $this->assertSame(
+                $case['expected'],
+                $this->renderBlade($case['blade']),
+                $case['message']
+            );
+        }
+    }
 }

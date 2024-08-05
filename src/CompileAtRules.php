@@ -400,4 +400,13 @@ class CompileAtRules
 
         return "<?php echo ($expression) ? 'checked' : ''; ?>";
     }
+
+    public function compileSelected(string $expression): string
+    {
+        if (empty($expression)) {
+            return "selected";
+        }
+
+        return "<?php echo ($expression) ? 'selected' : ''; ?>";
+    }
 }
