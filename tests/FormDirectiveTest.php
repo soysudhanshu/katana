@@ -105,4 +105,51 @@ class FormDirectiveTest extends TestCase
             );
         }
     }
+
+    public function testCheckedDirective(): void
+    {
+        $this->assertSame(
+            '<input type="checkbox" name="name" checked>',
+            $this->renderBlade('<input type="checkbox" name="name" @checked>')
+        );
+    }
+
+    public function testCheckedDirectiveWithConditionals(): void
+    {
+        $cases = [
+            [
+                'expected' => '<input type="checkbox" name="name" checked>',
+                'blade' => '<input type="checkbox" name="name" @checked(true)>',
+                'message' => 'The input should be checked when the condition is true',
+            ],
+            [
+                'expected' => '<input type="checkbox" name="name" >',
+                'blade' => '<input type="checkbox" name="name" @checked(false)>',
+                'message' => 'The input should not be checked when the condition is false',
+            ],
+            [
+                'expected' => '<input type="checkbox" name="name" >',
+                'blade' => '<input type="checkbox" name="name" @checked(null)>',
+                'message' => 'The input should not be checked when the condition is null',
+            ],
+            [
+                'expected' => '<input type="checkbox" name="name" checked>',
+                'blade' => '<input type="checkbox" name="name" @checked(fn() => true)>',
+                'message' => 'The input should be checked when the condition is a string that evaluates to true',
+            ],
+            [
+                'expected' => '<input type="checkbox" name="name" checked>',
+                'blade' => '<input type="checkbox" name="name" @checked(1 == "1")>',
+                'message' => 'The input should be checked when the condition is a string that evaluates to true',
+            ]
+        ];
+
+        foreach ($cases as $case) {
+            $this->assertSame(
+                $case['expected'],
+                $this->renderBlade($case['blade']),
+                $case['message']
+            );
+        }
+    }
 }

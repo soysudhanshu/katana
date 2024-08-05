@@ -391,4 +391,13 @@ class CompileAtRules
 
         return "<?php echo ($expression) ? 'disabled' : ''; ?>";
     }
+
+    public function compileChecked(string $expression): string
+    {
+        if (empty($expression)) {
+            return "checked";
+        }
+
+        return "<?php echo ($expression) ? 'checked' : ''; ?>";
+    }
 }
