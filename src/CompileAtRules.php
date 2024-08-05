@@ -382,4 +382,13 @@ class CompileAtRules
 
         return "<?php echo ($expression) ? 'required' : ''; ?>";
     }
+
+    public function compileDisabled(string $expression): string
+    {
+        if (empty($expression)) {
+            return "disabled";
+        }
+
+        return "<?php echo ($expression) ? 'disabled' : ''; ?>";
+    }
 }
