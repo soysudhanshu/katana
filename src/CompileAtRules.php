@@ -373,4 +373,13 @@ class CompileAtRules
         return "<?php echo \$template_renderer->withDefault(get_defined_vars())" .
             "->includeFirst{$expression}; ?>";
     }
+
+    public function compileRequired(string $expression): string
+    {
+        if (empty($expression)) {
+            return "required";
+        }
+
+        return "<?php echo ($expression) ? 'required' : ''; ?>";
+    }
 }
