@@ -199,4 +199,51 @@ class FormDirectiveTest extends TestCase
             );
         }
     }
+
+    public function testReadOnlyDirective(): void
+    {
+        $this->assertSame(
+            '<input type="text" name="name" readonly>',
+            $this->renderBlade('<input type="text" name="name" @readonly>')
+        );
+    }
+
+    public function testReadOnlyDirectiveWithConditionals(): void
+    {
+        $cases = [
+            [
+                'expected' => '<input type="text" name="name" readonly>',
+                'blade' => '<input type="text" name="name" @readonly(true)>',
+                'message' => 'The input should be readonly when the condition is true',
+            ],
+            [
+                'expected' => '<input type="text" name="name" >',
+                'blade' => '<input type="text" name="name" @readonly(false)>',
+                'message' => 'The input should not be readonly when the condition is false',
+            ],
+            [
+                'expected' => '<input type="text" name="name" >',
+                'blade' => '<input type="text" name="name" @readonly(null)>',
+                'message' => 'The input should not be readonly when the condition is null',
+            ],
+            [
+                'expected' => '<input type="text" name="name" readonly>',
+                'blade' => '<input type="text" name="name" @readonly(fn() => true)>',
+                'message' => 'The input should be readonly when the condition is a string that evaluates to true',
+            ],
+            [
+                'expected' => '<input type="text" name="name" readonly>',
+                'blade' => '<input type="text" name="name" @readonly(1 == "1")>',
+                'message' => 'The input should be readonly when the condition is a string that evaluates to true',
+            ]
+        ];
+
+        foreach ($cases as $case) {
+            $this->assertSame(
+                $case['expected'],
+                $this->renderBlade($case['blade']),
+                $case['message']
+            );
+        }
+    }
 }

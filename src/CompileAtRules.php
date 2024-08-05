@@ -409,4 +409,13 @@ class CompileAtRules
 
         return "<?php echo ($expression) ? 'selected' : ''; ?>";
     }
+
+    public function compileReadonly(string $expression): string
+    {
+        if (empty($expression)) {
+            return "readonly";
+        }
+
+        return "<?php echo ($expression) ? 'readonly' : ''; ?>";
+    }
 }
