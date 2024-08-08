@@ -324,4 +324,30 @@ class ComponentTagsTest extends TestCase
             )
         );
     }
+
+    public function testEmptyValueAttribute(): void
+    {
+        $this->createComponent(
+            'component',
+            '<p>Component Content - @empty($emptyAttribute) Empty Attribute @endempty</p>'
+        );
+
+        $cases = [
+            '<x-component empty-attribute=""/>',
+            "<x-component empty-attribute=''/>",
+
+            '<x-component empty-attribute=""></x-component>',
+            "<x-component empty-attribute=''></x-component>",
+        ];
+        
+        foreach ($cases as $case) {
+            $this->assertSame(
+                "<p>Component Content - Empty Attribute </p>",
+                $this->removeIndentation(
+                    $this->renderBlade($case)
+                ),
+                "Failed for case: $case"
+            );
+        }
+    }
 }
