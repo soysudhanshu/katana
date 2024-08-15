@@ -13,6 +13,8 @@ class Loop implements Iterator
     public int $iteration = 1;
     public int $count = 0;
     public int $remaining = 0;
+    public bool $even = false;
+    public bool $odd = false;
     public bool $last = false;
 
     public function setData($data)
@@ -41,6 +43,9 @@ class Loop implements Iterator
         if ($this->iteration === $this->count) {
             $this->last = true;
         }
+
+        $this->even = $this->iteration % 2 === 0;
+        $this->odd = !$this->even;
 
         next($this->data);
     }
@@ -72,6 +77,9 @@ class Loop implements Iterator
         } else {
             $this->last = false;
         }
+
+        $this->even = $this->iteration % 2 === 0;
+        $this->odd = !$this->even;
 
         reset($this->data);
     }

@@ -130,4 +130,25 @@ class LoopVariableTest extends TestCase
             $this->removeIndentation($output)
         );
     }
+
+    public function testOddEvenVariables(): void
+    {
+        $blade = <<<'BLADE'
+            @foreach([1, 2, 3] as $item)
+                @if($loop->odd)
+                    {{ $item }} is odd
+                @endif
+                @if($loop->even)
+                    {{ $item }} is even
+                @endif
+            @endforeach
+        BLADE;
+
+        $output = $this->renderBlade($blade);
+
+        $this->assertEquals(
+            "1 is odd 2 is even 3 is odd",
+            $this->removeIndentation($output)
+        );
+    }
 }
