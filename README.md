@@ -176,10 +176,11 @@ Template inheritance allows you to create layouts by defining a master template 
 | `@env`           |             | ❌     |
 | `@include`       |             | ✅     |
 | `@session`       |             | ❌     |
-| `@checked`       |             | ❌     |
-| `@disabled`      |             | ❌     |
-| `@readonly`      |             | ❌     |
-| `@required`      |             | ❌     |
+| `@selected`      |             | ✅     |
+| `@checked`       |             | ✅     |
+| `@disabled`      |             | ✅     |
+| `@readonly`      |             | ✅     |
+| `@required`      |             | ✅     |
 | `@includeIf`     |             | ✅     |
 | `@includeWhen`   |             | ✅     |
 | `@includeUnless` |             | ✅     |

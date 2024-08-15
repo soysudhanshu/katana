@@ -373,4 +373,49 @@ class CompileAtRules
         return "<?php echo \$template_renderer->withDefault(get_defined_vars())" .
             "->includeFirst{$expression}; ?>";
     }
+
+    public function compileRequired(string $expression): string
+    {
+        if (empty($expression)) {
+            return "required";
+        }
+
+        return "<?php echo ($expression) ? 'required' : ''; ?>";
+    }
+
+    public function compileDisabled(string $expression): string
+    {
+        if (empty($expression)) {
+            return "disabled";
+        }
+
+        return "<?php echo ($expression) ? 'disabled' : ''; ?>";
+    }
+
+    public function compileChecked(string $expression): string
+    {
+        if (empty($expression)) {
+            return "checked";
+        }
+
+        return "<?php echo ($expression) ? 'checked' : ''; ?>";
+    }
+
+    public function compileSelected(string $expression): string
+    {
+        if (empty($expression)) {
+            return "selected";
+        }
+
+        return "<?php echo ($expression) ? 'selected' : ''; ?>";
+    }
+
+    public function compileReadonly(string $expression): string
+    {
+        if (empty($expression)) {
+            return "readonly";
+        }
+
+        return "<?php echo ($expression) ? 'readonly' : ''; ?>";
+    }
 }
