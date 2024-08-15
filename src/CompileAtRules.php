@@ -10,9 +10,7 @@ class CompileAtRules
     protected bool $switchFirstCaseClosed = false;
     protected bool $usesTemplateInheritance = false;
 
-    public function __construct(protected string $content)
-    {
-    }
+    public function __construct(protected string $content) {}
 
 
     public function compile(): string
@@ -417,5 +415,10 @@ class CompileAtRules
         }
 
         return "<?php echo ($expression) ? 'readonly' : ''; ?>";
+    }
+
+    public function compileEach(string $expression): string
+    {
+        return '<?php $template_renderer->renderEach' . $expression . '; ?>';
     }
 }

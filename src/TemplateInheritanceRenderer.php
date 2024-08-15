@@ -10,9 +10,7 @@ class TemplateInheritanceRenderer
     protected string $currentSection = '';
     protected ?array $tempContextData = null;
 
-    public function __construct(protected Blade $blade)
-    {
-    }
+    public function __construct(protected Blade $blade) {}
 
     public function extends(string $template): void
     {
@@ -173,5 +171,28 @@ class TemplateInheritanceRenderer
         $this->tempContextData = $data;
 
         return $this;
+    }
+
+    public function renderEach(string $template, array $data, string $valueVariable = 'value', string $emptyTemplate = ''): void
+    {
+        if (empty($valueVariable)) {
+            $valueVariable = 'value';
+        }
+
+        $rendered = false;
+
+        foreach ($data as $key => $value) {
+            $rendered = true;
+
+            $this->include($template, [
+                'key' => $key,
+                $valueVariable => $value,
+            ]);
+        }
+
+
+        if (!$rendered && $emptyTemplate) {
+            $this->include($emptyTemplate);
+        }
     }
 }
