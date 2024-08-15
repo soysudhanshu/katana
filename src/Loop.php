@@ -91,6 +91,4 @@ class Loop implements Iterator
 
         reset($this->data);
     }
-
-    public function increment() {}
 }
