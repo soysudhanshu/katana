@@ -92,4 +92,42 @@ class LoopVariableTest extends TestCase
             $this->removeIndentation($output)
         );
     }
+
+    public function testLastVariable(): void
+    {
+        $numbers = range(1, 3);
+
+        $blade = <<<'BLADE'
+            @foreach([1, 2] as $item)
+                @if($loop->last)
+                    {{ $item }} is last
+                @endif
+            @endforeach
+        BLADE;
+
+        $output = $this->renderBlade($blade, ['numbers' => $numbers]);
+
+        $this->assertEquals(
+            "2 is last",
+            $this->removeIndentation($output)
+        );
+    }
+
+    public function testLastVariableWithOneElement(): void
+    {
+        $blade = <<<'BLADE'
+            @foreach([1] as $item)
+                @if($loop->last)
+                    {{ $item }} is last
+                @endif
+            @endforeach
+        BLADE;
+
+        $output = $this->renderBlade($blade);
+
+        $this->assertEquals(
+            "1 is last",
+            $this->removeIndentation($output)
+        );
+    }
 }
