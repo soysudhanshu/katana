@@ -23,7 +23,12 @@ trait CompileForeachTrait
          */
         return sprintf('<?php $loop_%s = $loop ?? null; ?>', $hash) .
             "<?php \$loop = new \Blade\Loop(); ?>" .
-            "<?php foreach(\$loop->setData($iterable) as $value): ?>";
+            sprintf(
+                '<?php foreach($loop->setData(%s, is_null($loop_%s) ? 0 : $loop_%2$s->depth + 1) as %s): ?>',
+                $iterable,
+                $hash,
+                $value
+            );
     }
 
     protected function compileEndforeach(string $expression): string

@@ -151,4 +151,26 @@ class LoopVariableTest extends TestCase
             $this->removeIndentation($output)
         );
     }
+
+    public function testDepthVariable(): void
+    {
+        $blade = <<<'BLADE'
+            @foreach([1] as $lvl1)
+                {{ $loop->depth }}
+                @foreach([6] as $lvl2)
+                    {{ $loop->depth }}
+                    @foreach([7] as $lvl3)
+                        {{ $loop->depth }}
+                    @endforeach
+                @endforeach
+            @endforeach
+        BLADE;
+
+        $output = $this->renderBlade($blade);
+
+        $this->assertEquals(
+            "0 1 2",
+            $this->removeIndentation($output)
+        );
+    }
 }

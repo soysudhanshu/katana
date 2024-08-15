@@ -16,10 +16,12 @@ class Loop implements Iterator
     public bool $even = false;
     public bool $odd = false;
     public bool $last = false;
+    public int $depth = 0;
 
-    public function setData($data)
+    public function setData($data, int $depth = 0): self
     {
         $this->data = $data;
+        $this->depth = $depth;
 
         if (is_countable($data)) {
             $this->count = count($data);
