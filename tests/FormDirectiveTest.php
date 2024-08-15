@@ -69,28 +69,28 @@ class FormDirectiveTest extends TestCase
     {
         $cases = [
             [
-                'condition' => 'true',
                 'expected' => '<input type="text" name="name" disabled>',
+                'blade' => '<input type="text" name="name" @disabled(true)>',
                 'message' => 'The input should be disabled when the condition is true',
             ],
             [
-                'condition' => 'false',
                 'expected' => '<input type="text" name="name" >',
+                'blade' => '<input type="text" name="name" @disabled(false)>',
                 'message' => 'The input should not be disabled when the condition is false',
             ],
             [
-                'condition' => 'null',
                 'expected' => '<input type="text" name="name" >',
+                'blade' => '<input type="text" name="name" @disabled(null)>',
                 'message' => 'The input should not be disabled when the condition is null',
             ],
             [
-                'condition' => 'fn() => true',
                 'expected' => '<input type="text" name="name" disabled>',
+                'blade' => '<input type="text" name="name" @disabled(fn() => true)>',
                 'message' => 'The input should be disabled when the condition is a string that evaluates to true',
             ],
             [
-                'condition' => '1 == "1"',
                 'expected' => '<input type="text" name="name" disabled>',
+                'blade' => '<input type="text" name="name" @disabled(1 == "1")>',
                 'message' => 'The input should be disabled when the condition is a string that evaluates to true',
             ]
         ];
@@ -98,9 +98,7 @@ class FormDirectiveTest extends TestCase
         foreach ($cases as $case) {
             $this->assertSame(
                 $case['expected'],
-                $this->renderBlade(
-                    '<input type="text" name="name" @disabled(' . $case['condition'] . ')>',
-                ),
+                $this->renderBlade($case['blade']),
                 $case['message']
             );
         }
