@@ -8,51 +8,45 @@ use IteratorAggregate;
 class Loop implements Iterator
 {
     public array $data;
+
     public bool $first = true;
+    public bool $last = false;
+
     public int $index = 0;
     public int $iteration = 1;
+
     public int $count = 0;
     public int $remaining = 0;
+
     public bool $even = false;
     public bool $odd = false;
-    public bool $last = false;
-    public int $depth = 0;
+
     public ?self $parent = null;
+    public int $depth = 0;
 
     public function setData($data, ?self $parent = null): self
     {
         $this->data = $data;
-
-        if (!is_null($parent)) {
-            $this->parent = $parent;
-            $this->depth = $parent->depth + 1;
-        }
-
-        if (is_countable($data)) {
-            $this->count = count($data);
-            $this->remaining = $this->count - $this->iteration;
-        }
+        $this->parent = $parent;
 
         return $this;
     }
 
     public function next(): void
     {
+        $this->first = false;
+
         $this->index++;
         $this->iteration++;
 
-        $this->first = false;
+        $this->even = $this->iteration % 2 === 0;
+        $this->odd = !$this->even;
 
         if ($this->count) {
             $this->remaining = $this->count - $this->iteration;
         }
 
-        if ($this->iteration === $this->count) {
-            $this->last = true;
-        }
-
-        $this->even = $this->iteration % 2 === 0;
-        $this->odd = !$this->even;
+        $this->last = $this->iteration === $this->count;
 
         next($this->data);
     }
@@ -74,19 +68,26 @@ class Loop implements Iterator
 
     public function rewind(): void
     {
-        $this->first = true;
         $this->index = 0;
         $this->iteration = 1;
-        $this->remaining = $this->count - $this->iteration;
+        $this->remaining = 0;
 
-        if ($this->count && $this->iteration === $this->count) {
-            $this->last = true;
-        } else {
-            $this->last = false;
-        }
+        $this->first = true;
+        $this->last = false;
 
         $this->even = $this->iteration % 2 === 0;
         $this->odd = !$this->even;
+
+        if ($this->parent) {
+            $this->depth = $this->parent->depth + 1;
+        }
+
+        if (is_countable($this->data)) {
+            $this->count = count($this->data);
+            $this->remaining = $this->count - $this->iteration;
+
+            $this->last = $this->count === 1;
+        }
 
         reset($this->data);
     }
