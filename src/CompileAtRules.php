@@ -4,11 +4,15 @@ namespace Blade;
 
 class CompileAtRules
 {
+    const FORELSE_CLOSED = 0;
+    const FORELSE_OPEN = 1;
+    const FORELSE_OPEN_EMPTY_BLOCK = 2;
     use CompileForeachTrait;
 
     protected bool $switchOpen = false;
     protected bool $switchFirstCaseClosed = false;
     protected bool $usesTemplateInheritance = false;
+    protected int $forelseStatus = self::FORELSE_CLOSED;
 
     public function __construct(protected string $content) {}
 
@@ -194,6 +198,12 @@ class CompileAtRules
 
     protected function compileEmpty(string $expression): string
     {
+        if ($this->forelseStatus === self::FORELSE_OPEN) {
+            $this->forelseStatus = self::FORELSE_OPEN_EMPTY_BLOCK;
+            return '<?php endforeach; ?>' .
+                '<?php if(!$__forelse_looped): ?>';
+        }
+
         return "<?php if(empty{$expression}): ?>";
     }
 
@@ -420,5 +430,27 @@ class CompileAtRules
     public function compileEach(string $expression): string
     {
         return '<?php $template_renderer->renderEach' . $expression . '; ?>';
+    }
+
+    public function compileForelse(string $expression): string
+    {
+        $this->forelseStatus = self::FORELSE_OPEN;
+
+        return '<?php $__forelse_looped = false; ?>' .
+            "<?php foreach{$expression}: ?>" .
+            '<?php $__forelse_looped = true; ?>';
+    }
+
+    public function compileEndforelse(string $expression): string
+    {
+        $output = '<?php endforeach; ?>';
+
+        if ($this->forelseStatus === self::FORELSE_OPEN_EMPTY_BLOCK) {
+            $output = "<?php endif; ?>";
+        }
+
+        $this->forelseStatus = self::FORELSE_CLOSED;
+
+        return $output;
     }
 }

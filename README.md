@@ -123,7 +123,7 @@ Template inheritance allows you to create layouts by defining a master template 
 | `@for`     | For loop                              | ✅     |
 | `@foreach` | Foreach loop                          | ✅     |
 | `@while`   | While loop                            | ✅     |
-| `@forelse` | Forelse loop                          | ❌     |
+| `@forelse` | Forelse loop                          | ✅     |
 | `$loop`    | Loop variable in the for loop (basic) | ✅     |
 
 ### Conditional Class & Styles
