@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use ArrayIterator;
+use IteratorAggregate;
 use PHPUnit\Framework\TestCase;
 
 class LoopVariableTest extends TestCase
@@ -191,6 +193,52 @@ class LoopVariableTest extends TestCase
 
         $this->assertEquals(
             "0 1",
+            $this->removeIndentation($output)
+        );
+    }
+
+    public function testLoopWithIterator()
+    {
+        $blade = <<<'BLADE'
+            @foreach(new ArrayIterator([1, 2, 3]) as $key => $item)
+                {{ $loop->index }}-{{ $key }}-{{ $item }}
+            @endforeach
+        BLADE;
+
+        $output = $this->renderBlade($blade);
+
+        $this->assertEquals(
+            "0-0-1 1-1-2 2-2-3",
+            $this->removeIndentation($output)
+        );
+    }
+
+    public function testLoopWithIteratorAggregate()
+    {
+        $data = new class([1, 2, 3]) implements IteratorAggregate {
+            private $data;
+
+            public function __construct(array $data)
+            {
+                $this->data = $data;
+            }
+
+            public function getIterator()
+            {
+                return new ArrayIterator($this->data);
+            }
+        };
+
+        $blade = <<<'BLADE'
+            @foreach($numbers as $key => $item)
+                {{ $loop->index }}-{{ $key }}-{{ $item }}
+            @endforeach
+        BLADE;
+
+        $output = $this->renderBlade($blade, ['numbers' => $data]);
+
+        $this->assertEquals(
+            "0-0-1 1-1-2 2-2-3",
             $this->removeIndentation($output)
         );
     }

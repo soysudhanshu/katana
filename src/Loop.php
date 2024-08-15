@@ -7,7 +7,7 @@ use IteratorAggregate;
 
 class Loop implements Iterator
 {
-    public array $data;
+    public array|Iterator $data;
 
     public bool $first = true;
     public bool $last = false;
@@ -26,6 +26,10 @@ class Loop implements Iterator
 
     public function setData($data, ?self $parent = null): self
     {
+        if ($data instanceof IteratorAggregate) {
+            $data = $data->getIterator();
+        }
+
         $this->data = $data;
         $this->parent = $parent;
 
@@ -48,16 +52,29 @@ class Loop implements Iterator
 
         $this->last = $this->iteration === $this->count;
 
+        if ($this->data instanceof Iterator) {
+            $this->data->next();
+            return;
+        }
+
         next($this->data);
     }
 
     public function current()
     {
+        if ($this->data instanceof Iterator) {
+            return $this->data->current();
+        }
+
         return current($this->data);
     }
 
     public function key()
     {
+        if ($this->data instanceof Iterator) {
+            return $this->data->key();
+        }
+
         return key($this->data);
     }
 
@@ -87,6 +104,11 @@ class Loop implements Iterator
             $this->remaining = $this->count - $this->iteration;
 
             $this->last = $this->count === 1;
+        }
+
+        if ($this->data instanceof Iterator) {
+            $this->data->rewind();
+            return;
         }
 
         reset($this->data);
