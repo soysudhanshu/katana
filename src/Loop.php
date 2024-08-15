@@ -17,11 +17,16 @@ class Loop implements Iterator
     public bool $odd = false;
     public bool $last = false;
     public int $depth = 0;
+    public ?self $parent = null;
 
-    public function setData($data, int $depth = 0): self
+    public function setData($data, ?self $parent = null): self
     {
         $this->data = $data;
-        $this->depth = $depth;
+
+        if (!is_null($parent)) {
+            $this->parent = $parent;
+            $this->depth = $parent->depth + 1;
+        }
 
         if (is_countable($data)) {
             $this->count = count($data);

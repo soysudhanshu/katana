@@ -24,7 +24,7 @@ trait CompileForeachTrait
         return sprintf('<?php $loop_%s = $loop ?? null; ?>', $hash) .
             "<?php \$loop = new \Blade\Loop(); ?>" .
             sprintf(
-                '<?php foreach($loop->setData(%s, is_null($loop_%s) ? 0 : $loop_%2$s->depth + 1) as %s): ?>',
+                '<?php foreach($loop->setData(%s, $loop_%s) as %s): ?>',
                 $iterable,
                 $hash,
                 $value
