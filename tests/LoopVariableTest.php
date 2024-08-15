@@ -51,9 +51,43 @@ class LoopVariableTest extends TestCase
             @endforeach
         BLADE;
 
+        $output = $this->renderBlade($blade);
         $this->assertEquals(
             "1 1 2 1 3 1",
-            pregReplace('/\s+/', ' ', trim($this->renderBlade($blade)))
+            $this->removeIndentation($output)
+        );
+    }
+
+    // public function testRemainingLoopVariables(): void
+    // {
+    //     $blade = <<<'BLADE'
+    //         @foreach([1, 2, 3] as $item)
+    //             {{ $loop->remaining }}
+    //         @endforeach
+    //     BLADE;
+
+    //     $this->assertEquals(
+    //         "2 1 0",
+    //         preg_replace('/\s+/', ' ', trim($this->renderBlade($blade)))
+    //     );
+    // }
+
+    public function testCountVariable(): void
+    {
+        $numbers = range(1, 3);
+
+        $blade = <<<'BLADE'
+            @foreach($numbers as $item)
+                {{ $loop->count }}
+                @break;
+            @endforeach
+        BLADE;
+
+        $output = $this->renderBlade($blade, ['numbers' => $numbers]);
+
+        $this->assertEquals(
+            count($numbers),
+            $this->removeIndentation($output)
         );
     }
 }

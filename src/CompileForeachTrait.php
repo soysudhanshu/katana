@@ -11,6 +11,11 @@ trait CompileForeachTrait
         $hash = md5($expression . mt_rand());
         $this->foreachHashes[] = $hash;
 
+
+        preg_match("/\((?'iterable'.*) as (?'value'(.*))\)/", $expression, $expressionContent);
+
+        $iterable = $expressionContent['iterable'];
+        $value = $expressionContent['value'];
         /**
          * We will back up current loop data
          * before starting a new loop, to
@@ -18,7 +23,7 @@ trait CompileForeachTrait
          */
         return sprintf('<?php $loop_%s = $loop ?? null; ?>', $hash) .
             "<?php \$loop = new \Blade\Loop(); ?>" .
-            "<?php foreach{$expression}: ?>";
+            "<?php foreach(\$loop->setData($iterable) as $value): ?>";
     }
 
     protected function compileEndforeach(string $expression): string
