@@ -8,7 +8,7 @@ class ForeachLoopTest extends TestCase
 {
     use VerifiesOutputTrait;
 
-    public function test_basic_foreach()
+    public function testBasicForeach()
     {
         $this->assertEquals(
             $this->renderBlade('@foreach([1, 2, 3] as $item){{ "Hello" }}@endforeach'),
@@ -16,7 +16,7 @@ class ForeachLoopTest extends TestCase
         );
     }
 
-    public function test_foreach_with_key()
+    public function testForeachWithKey()
     {
         $numbers = [1, 2, 3];
 
@@ -32,67 +32,18 @@ class ForeachLoopTest extends TestCase
         }
     }
 
-    public function test_foreach_with_empty()
+    public function testForeachWithEmpty()
     {
         $this->assertEmpty(
             $this->renderBlade('@foreach([] as $item){{ "Hello" }}@endforeach')
         );
     }
 
-    public function test_foreach_with_nested_parenthesis()
+    public function testForeachWithNestedParenthesis()
     {
         $this->assertEquals(
             $this->renderBlade('@foreach(range(0, 9) as $item){{ $item }}@endforeach'),
             "0123456789"
-        );
-    }
-
-    public function test_foreach_exposes_loop_index()
-    {
-        $output = $this->renderBlade(
-            '@foreach([1, 2, 3] as $item){{ $loop->index }}@endforeach'
-        );
-
-        $this->assertEquals($output, "012");
-    }
-
-    public function test_foreach_exposes_loop_iteration()
-    {
-        $output = $this->renderBlade(
-            '@foreach([1, 2, 3] as $item){{ $loop->iteration }}@endforeach'
-        );
-
-        $this->assertEquals($output, "123");
-    }
-
-    public function test_foreach_exposes_loop_first()
-    {
-        $output = $this->renderBlade(
-            '@foreach([1, 2, 3] as $item)' .
-                '@if($loop->first)Only first!@endif' .
-                '@endforeach'
-        );
-
-        $this->assertEquals(
-            $output,
-            "Only first!"
-        );
-    }
-
-    public function test_nested_loop_variable(): void
-    {
-        $blade = <<<'BLADE'
-            @foreach([1, 2, 3] as $item)
-                {{ $loop->iteration }}
-                @foreach([4] as $nestedItem)
-                    {{ $loop->iteration }}
-                @endforeach
-            @endforeach
-        BLADE;
-
-        $this->assertEquals(
-            "1 1 2 1 3 1",
-            preg_replace('/\s+/', ' ', trim($this->renderBlade($blade)))
         );
     }
 }

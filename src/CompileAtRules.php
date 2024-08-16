@@ -437,7 +437,7 @@ class CompileAtRules
         $this->forelseStatus = self::FORELSE_OPEN;
 
         return '<?php $__forelse_looped = false; ?>' .
-            "<?php foreach{$expression}: ?>" .
+            $this->compileForeach($expression) .
             '<?php $__forelse_looped = true; ?>';
     }
 
