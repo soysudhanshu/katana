@@ -242,4 +242,26 @@ class LoopVariableTest extends TestCase
             $this->removeIndentation($output)
         );
     }
+
+    public function testLoopWithGenerator()
+    {
+        $data = function () {
+            yield 1;
+            yield 2;
+            yield 3;
+        };
+
+        $blade = <<<'BLADE'
+            @foreach($numbers() as $key => $item)
+                {{ $loop->index }}-{{ $key }}-{{ $item }}
+            @endforeach
+        BLADE;
+
+        $output = $this->renderBlade($blade, ['numbers' => $data]);
+
+        $this->assertEquals(
+            "0-0-1 1-1-2 2-2-3",
+            $this->removeIndentation($output)
+        );
+    }
 }
