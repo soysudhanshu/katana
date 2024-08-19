@@ -15,9 +15,7 @@ class Compiler
      */
     protected array $contentBlocks = [];
 
-    public function __construct(protected string $template)
-    {
-    }
+    public function __construct(protected string $template) {}
 
 
     public function compile()
@@ -32,6 +30,7 @@ class Compiler
         $result = $this->compileOutputDirective($result);
         // $result = $this->compileOutputDirective($result);
         $result = $this->compileUnsafeOutputDirective($result);
+        $result = $this->compileOnceDirective($result);
 
         $result = $this->replaceContentBlocks($result);
 
@@ -158,5 +157,33 @@ class Compiler
 
             return "<?php echo $expression; ?>";
         }, $template);
+    }
+
+    protected function compileOnceDirective(string $template)
+    {
+        do {
+            $template = preg_replace_callback(
+                "/@once(?'content'(?:\s|.)*?)@endonce/",
+                function (array $matches) use ($template) {
+                    $content = $matches[0];
+                    $identifier = md5($content . strpos($template, '@once'));
+
+                    $content = str_replace(
+                        '@once',
+                        "<?php if(!\$template_renderer->hasRendered('$identifier')): ?>".
+                        "<?php \$template_renderer->markAsRendered('$identifier'); ?>",
+                        $content
+                    );
+
+                    $content = str_replace('@endonce', '<?php endif; ?>', $content);
+
+                    return $content;
+                },
+                $template,
+                1
+            );
+        } while (preg_match("/@once/", $template));
+
+        return $template;
     }
 }

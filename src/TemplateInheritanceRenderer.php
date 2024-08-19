@@ -9,6 +9,7 @@ class TemplateInheritanceRenderer
     protected bool $renderingParentLayout = false;
     protected string $currentSection = '';
     protected ?array $tempContextData = null;
+    protected array $rendered = [];
 
     public function __construct(protected Blade $blade) {}
 
@@ -194,5 +195,15 @@ class TemplateInheritanceRenderer
         if (!$rendered && $emptyTemplate) {
             $this->include($emptyTemplate);
         }
+    }
+
+    public function hasRendered(string $identifier): bool
+    {
+        return isset($this->rendered[$identifier]);
+    }
+
+    public function markAsRendered(string $identifier): void
+    {
+        $this->rendered[$identifier] = true;
     }
 }
