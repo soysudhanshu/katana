@@ -186,7 +186,7 @@ Template inheritance allows you to create layouts by defining a master template 
 | `@includeUnless` |             | ✅     |
 | `@includeFirst`  |             | ✅     |
 | `@each`          |             | ✅     |
-| `@once`          |             | ❌     |
+| `@once`          |             | ✅     |
 | `@push`          |             | ❌     |
 | `@pushOnce`      |             | ❌     |
 | `@prependOnce`   |             | ❌     |
