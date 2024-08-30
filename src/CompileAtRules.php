@@ -453,4 +453,15 @@ class CompileAtRules
 
         return $output;
     }
+
+    public function compileFragment(string $expression): string
+    {
+        return "<?php \$template_renderer->startFragment{$expression}; ?>";
+    }
+
+    public function compileEndfragment(string $expression): string
+    {
+        return "<?php \$template_renderer->endFragment(); ?>";
+    }
+
 }

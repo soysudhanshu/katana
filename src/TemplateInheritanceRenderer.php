@@ -206,4 +206,19 @@ class TemplateInheritanceRenderer
     {
         $this->rendered[$identifier] = true;
     }
+
+    public function startFragment(string $name): void
+    {
+        ob_start();
+
+        $this->blade->fragments[$name] = (object)[
+            'name' => $name,
+            'content' => '',
+        ];
+    }
+
+    public function endFragment(): void
+    {
+        echo end($this->blade->fragments)->content = ob_get_clean();
+    }
 }

@@ -18,10 +18,10 @@ trait VerifiesOutputTrait
             mkdir($this->getTempDirectory());
         }
 
-        $this->blade = new Blade(
-            $this->getTempDirectory(),
-            $this->getTempDirectory()
-        );
+        Blade::$cachePath = $this->getTempDirectory();
+        Blade::$viewPath = $this->getTempDirectory();
+
+        $this->blade = new Blade;
     }
 
 
