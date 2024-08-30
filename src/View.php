@@ -15,33 +15,30 @@ class View implements HtmlableInterface
         return $this;
     }
 
-    public function fragment(string $name)
+    public function fragment(string $name): string
     {
-        (string) $this;
-        return $this->engine->getFragment($name);
+        return $this->render(fn(Blade $engine) => $engine->getFragment($name));
     }
 
-    public function fragments(array $fragments)
+    public function fragments(array $fragments): string
     {
-        (string) $this;
+        return $this->render(function (Blade $engine) use ($fragments) {
+            $output = '';
 
-        $output = '';
+            foreach ($fragments as $name) {
+                $output .= $engine->getFragment($name);
+            }
 
-        foreach ($fragments as $name) {
-            $output .= $this->engine->getFragment($name);
-        }
-
-        return $output;
+            return $output;
+        });
     }
 
     public function fragmentIf(bool| callable $condition, string $name)
     {
-        (string) $this;
-
         $value = is_callable($condition) ? $condition() : $condition;
 
         if ($value) {
-            return $this->engine->getFragment($name);
+            return $this->render(fn(Blade $engine) => $engine->getFragment($name));
         }
 
         return $this;
@@ -49,13 +46,24 @@ class View implements HtmlableInterface
 
     public function toHtml(): string
     {
-        return (string) $this;
+        return $this->render();
     }
 
     public function __toString(): string
     {
+        return $this->render();
+    }
+
+    public function render(?callable $callback = null): string
+    {
         ob_start();
         $this->engine->renderContents($this->name, $this->data);
-        return ob_get_clean();
+        $output =  ob_get_clean();
+
+        if ($callback) {
+            return $callback($this->engine);
+        }
+
+        return $output;
     }
 }
