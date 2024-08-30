@@ -23,7 +23,7 @@ class FragmentDirectiveTest extends TestCase
         $this->assertEquals(
             'Content',
             $this->removeIndentation(
-                (string) (new View('fragment'))->fragment('content')
+                (new View('fragment'))->fragment('content')
             )
         );
     }
@@ -75,6 +75,35 @@ class FragmentDirectiveTest extends TestCase
             'Content Sidebar',
             $this->removeIndentation(
                 (string) (new View('fragment'))->fragments(['content', 'sidebar'])
+            )
+        );
+    }
+
+    public function testNestedFragments(): void
+    {
+        $this->createTemporaryBladeFile(
+            "Header
+            @fragment('content')
+                Content
+                @fragment('sidebar')
+                    Sidebar
+                @endfragment
+            @endfragment
+            Footer",
+            'fragment',
+        );
+
+        $this->assertEquals(
+            'Content Sidebar',
+            $this->removeIndentation(
+                (string) (new View('fragment'))->fragment('content')
+            )
+        );
+
+        $this->assertEquals(
+            'Sidebar',
+            $this->removeIndentation(
+                (string) (new View('fragment'))->fragment('sidebar')
             )
         );
     }

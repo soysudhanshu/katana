@@ -3,22 +3,33 @@
 
 namespace Blade\Environments;
 
+use Exception;
+
 trait FragmentEnvironment
 {
     public array $fragments = [];
+    public array $fragmentStack = [];
 
     public function startFragment(string $name): void
     {
         ob_start();
 
-        $this->fragments[$name] = (object)[
-            'name' => $name,
-            'content' => '',
-        ];
+        $this->fragmentStack[] = $name;
     }
 
     public function endFragment(): void
     {
-        echo end($this->fragments)->content = ob_get_clean();
+        if (empty($this->fragmentStack)) {
+            throw new Exception('Cannot end a fragment without starting one.');
+        }
+
+        $fragment = array_pop($this->fragmentStack);
+
+        echo $this->fragments[$fragment] = ob_get_clean();
+    }
+
+    public function getFragment(string $name): string
+    {
+        return $this->fragments[$name] ?? '';
     }
 }

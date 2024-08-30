@@ -24,7 +24,7 @@ class View implements HtmlableInterface
     public function fragment(string $name)
     {
         (string) $this;
-        return $this->engine->fragments[$name]->content;
+        return $this->engine->getFragment($name);
     }
 
     public function fragments(array $fragments)
@@ -34,7 +34,7 @@ class View implements HtmlableInterface
         $output = '';
 
         foreach ($fragments as $name) {
-            $output .= $this->engine->fragments[$name]->content;
+            $output .= $this->engine->getFragment($name);
         }
 
         return $output;
@@ -47,7 +47,7 @@ class View implements HtmlableInterface
         $value = is_callable($condition) ? $condition() : $condition;
 
         if ($value) {
-            return $this->engine->fragments[$name]->content;
+            return $this->engine->getFragment($name);
         }
 
         return $this;
