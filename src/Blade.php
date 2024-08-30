@@ -2,6 +2,8 @@
 
 namespace Blade;
 
+use Blade\Environments\FragmentEnvironment;
+
 final class Blade
 {
     public static string $cachePath;
@@ -10,6 +12,8 @@ final class Blade
     public array $fragments = [];
     public ComponentRenderer $componentRenderer;
     public TemplateInheritanceRenderer $templateRenderer;
+
+    use FragmentEnvironment;
 
     public static function setCachePath(string $path): void
     {
@@ -54,6 +58,7 @@ final class Blade
 
         $component_renderer = $this->componentRenderer;
         $template_renderer = $this->templateRenderer;
+        $__env = $this;
 
         include $this->getCachedViewPath($this->compile($view));
     }
