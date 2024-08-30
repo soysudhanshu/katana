@@ -6,13 +6,7 @@ use Blade\Interfaces\HtmlableInterface;
 
 class View implements HtmlableInterface
 {
-    protected Blade $engine;
-    protected bool $rendered;
-
-    public function __construct(public string $name, public array $data = [])
-    {
-        $this->engine = new Blade;
-    }
+    public function __construct(protected Blade $engine, public string $name, public array $data = []) {}
 
     public function with(array $data): static
     {
@@ -61,7 +55,7 @@ class View implements HtmlableInterface
     public function __toString(): string
     {
         ob_start();
-        $this->engine->render($this->name, $this->data);
+        $this->engine->renderContents($this->name, $this->data);
         return ob_get_clean();
     }
 }

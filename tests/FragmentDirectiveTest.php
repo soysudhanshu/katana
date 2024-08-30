@@ -23,7 +23,7 @@ class FragmentDirectiveTest extends TestCase
         $this->assertEquals(
             'Content',
             $this->removeIndentation(
-                (new View('fragment'))->fragment('content')
+                $this->blade->render('fragment')->fragment('content')
             )
         );
     }
@@ -45,14 +45,14 @@ class FragmentDirectiveTest extends TestCase
         $this->assertEquals(
             'Content',
             $this->removeIndentation(
-                (string) (new View('fragment'))->fragment('content')
+                $this->blade->render('fragment')->fragment('content')
             )
         );
 
         $this->assertEquals(
             'Sidebar',
             $this->removeIndentation(
-                (string) (new View('fragment'))->fragment('sidebar')
+                $this->blade->render('fragment')->fragment('sidebar')
             )
         );
     }
@@ -74,7 +74,7 @@ class FragmentDirectiveTest extends TestCase
         $this->assertEquals(
             'Content Sidebar',
             $this->removeIndentation(
-                (string) (new View('fragment'))->fragments(['content', 'sidebar'])
+                $this->blade->render('fragment')->fragments(['content', 'sidebar'])
             )
         );
     }
@@ -96,14 +96,14 @@ class FragmentDirectiveTest extends TestCase
         $this->assertEquals(
             'Content Sidebar',
             $this->removeIndentation(
-                (string) (new View('fragment'))->fragment('content')
+                $this->blade->render('fragment')->fragment('content')
             )
         );
 
         $this->assertEquals(
             'Sidebar',
             $this->removeIndentation(
-                (string) (new View('fragment'))->fragment('sidebar')
+                $this->blade->render('fragment')->fragment('sidebar')
             )
         );
     }
@@ -122,14 +122,14 @@ class FragmentDirectiveTest extends TestCase
         $this->assertEquals(
             'Content',
             $this->removeIndentation(
-                (string) (new View('fragment'))->fragmentIf(true, 'content')
+                $this->blade->render('fragment')->fragmentIf(true, 'content')
             )
         );
 
         $this->assertEquals(
             'Header Content Footer',
             $this->removeIndentation(
-                (string) (new View('fragment'))->fragmentIf(false, 'content')
+                $this->blade->render('fragment')->fragmentIf(false, 'content')
             )
         );
     }

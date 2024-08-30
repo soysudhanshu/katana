@@ -52,7 +52,12 @@ final class Blade
         return $identifier;
     }
 
-    public function render(string $view, array $data = []): void
+    public function render(string $view, array $data = []): View
+    {
+        return new View($this, $view, $data);
+    }
+
+    public function renderContents(string $view, array $data = []): void
     {
         extract($data, EXTR_SKIP);
 
