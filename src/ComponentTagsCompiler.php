@@ -190,7 +190,7 @@ class ComponentTagsCompiler
 
     protected function compileClosingTags(string $template): string
     {
-        $regex = "/<\/x-(?'name'[a-z\.-]+)>/";
+        $regex = "/<\/x-(?'name'[a-z0-9\.-]+)>/";
 
         return preg_replace_callback(
             $regex,
