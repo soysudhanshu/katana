@@ -2,12 +2,17 @@
 
 namespace Blade;
 
+use Blade\Compilers\FragmentCompiler;
+use Blade\Environments\FragmentEnvironment;
+
 class CompileAtRules
 {
     const FORELSE_CLOSED = 0;
     const FORELSE_OPEN = 1;
     const FORELSE_OPEN_EMPTY_BLOCK = 2;
+
     use CompileForeachTrait;
+    use FragmentCompiler;
 
     protected bool $switchOpen = false;
     protected bool $switchFirstCaseClosed = false;

@@ -2,17 +2,34 @@
 
 namespace Blade;
 
+use Blade\Environments\FragmentEnvironment;
+
 final class Blade
 {
+    public static string $cachePath;
+    public static string $viewPath;
+
+    public array $fragments = [];
     public ComponentRenderer $componentRenderer;
     public TemplateInheritanceRenderer $templateRenderer;
 
-    public function __construct(protected string $viewPath, protected string $cachePath)
+    use FragmentEnvironment;
+
+    public static function setCachePath(string $path): void
+    {
+        self::$cachePath = $path;
+    }
+
+    public static function setViewPath(string $path): void
+    {
+        self::$viewPath = $path;
+    }
+
+    public function __construct()
     {
         $this->componentRenderer = new ComponentRenderer($this);
         $this->templateRenderer = new TemplateInheritanceRenderer($this);
     }
-
 
     public function compile(string $view): string
     {
@@ -35,14 +52,20 @@ final class Blade
         return $identifier;
     }
 
-    public function render(string $view, array $data = []): void
+    public function render(string $view, array $data = []): View
+    {
+        return new View($this, $view, $data);
+    }
+
+    public function renderContents(string $view, array $data = []): void
     {
         extract($data, EXTR_SKIP);
 
         $component_renderer = $this->componentRenderer;
         $template_renderer = $this->templateRenderer;
+        $__env = $this;
 
-        include $this->getCachedViewPath($this->compile($view));;
+        include $this->getCachedViewPath($this->compile($view));
     }
 
     public function viewExists(string $name): bool
@@ -54,7 +77,7 @@ final class Blade
     {
         return sprintf(
             '%s/%s.blade.php',
-            rtrim($this->viewPath, '/'),
+            rtrim(self::$viewPath, '/'),
             str_replace('.', '/', $name)
         );
     }
@@ -63,7 +86,7 @@ final class Blade
     {
         return sprintf(
             '%s/%s.php',
-            rtrim($this->cachePath, '/'),
+            rtrim(self::$cachePath, '/'),
             $identifier
         );
     }

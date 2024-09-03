@@ -18,10 +18,10 @@ trait VerifiesOutputTrait
             mkdir($this->getTempDirectory());
         }
 
-        $this->blade = new Blade(
-            $this->getTempDirectory(),
-            $this->getTempDirectory()
-        );
+        Blade::$cachePath = $this->getTempDirectory();
+        Blade::$viewPath = $this->getTempDirectory();
+
+        $this->blade = new Blade;
     }
 
 
@@ -103,9 +103,7 @@ trait VerifiesOutputTrait
     {
         $name = $this->createTemporaryBladeFile(template: $template);
 
-        ob_start();
-        $this->blade->render($name, $data);
-        return ob_get_clean();
+        return (string) $this->blade->render($name, $data);
     }
 
     public function createComponent(string $name, string $template, $data = [])
