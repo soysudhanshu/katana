@@ -22,6 +22,8 @@ trait VerifiesOutputTrait
         Blade::$viewPath = $this->getTempDirectory();
 
         $this->blade = new Blade;
+
+        $this->blade->setMode(Blade::MODE_TESTING);
     }
 
 
@@ -46,6 +48,8 @@ trait VerifiesOutputTrait
             $directory = __DIR__ . '/tmp';
             sys_get_temp_dir();
         }
+
+
 
         return $directory;
     }
@@ -113,7 +117,6 @@ trait VerifiesOutputTrait
             $name,
             true
         );
-        // dd($name);
     }
 
     protected function removeIndentation(string $input): string

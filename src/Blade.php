@@ -6,12 +6,26 @@ use Blade\Environments\FragmentEnvironment;
 
 final class Blade
 {
+    /**
+     * Default mode, templates files
+     * will be compiled and cached.
+     */
+    public const MODE_PRODUCTION = 1;
+
+    /**
+     * Only to be used in while running
+     * tests.
+     */
+    public const MODE_TESTING = 2;
+
     public static string $cachePath;
     public static string $viewPath;
 
     public array $fragments = [];
     public ComponentRenderer $componentRenderer;
     public TemplateInheritanceRenderer $templateRenderer;
+
+    protected int $mode = self::MODE_PRODUCTION;
 
     use FragmentEnvironment;
 
@@ -23,6 +37,11 @@ final class Blade
     public static function setViewPath(string $path): void
     {
         self::$viewPath = $path;
+    }
+
+    public function setMode(int $mode): void
+    {
+        $this->mode = $mode;
     }
 
     public function __construct()
@@ -39,17 +58,35 @@ final class Blade
             throw new \Exception('View not found' .  $path);
         }
 
-        $identifier = hash('sha256', $path);
+        $identifier = $this->getViewIdentifier($path);
+        $compiledPath = $this->getCachedViewPath($identifier);
 
-        $complied = (new Compiler(file_get_contents($path)))->compile();
+        if (file_exists($compiledPath)) {
+            return $identifier;
+        }
+
+        $viewContents = file_get_contents($path);
+
+        $complied = (new Compiler($viewContents))->compile();
         $complied .= "<?php ##PATH $path ## ?>";
 
-        $this->saveCache(
-            $identifier,
-            $complied
-        );
+        $this->saveCache($identifier, $complied);
 
         return $identifier;
+    }
+
+    public function getViewIdentifier(string $path): string
+    {
+        /**
+         * During unit tests the resolution time of filemtime
+         * might not be sufficient, to identify changes
+         * in the file to trigger recompilation.
+         */
+        if ($this->mode === self::MODE_TESTING) {
+            return hash('xxh64', file_get_contents($path));
+        }
+
+        return hash('xxh64', $path . filemtime($path));
     }
 
     public function render(string $view, array $data = []): View
