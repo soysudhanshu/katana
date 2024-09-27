@@ -147,7 +147,7 @@ class Compiler
 
     protected function compileUnsafeOutputDirective(string $template)
     {
-        return preg_replace_callback("/(@|){!!(?'expression'.*?)!!}/",  function (array $matches) {
+        return preg_replace_callback("/(@|){!!(?'expression'(\s|.)*?)!!}/",  function (array $matches) {
             $directive = $matches[0];
             $expression = $matches['expression'];
 

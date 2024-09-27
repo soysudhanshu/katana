@@ -68,4 +68,14 @@ class OutputDirectiveTest extends TestCase
             $this->renderBlade('{!!1 + 2!!}')
         );
     }
+
+    public function testUnescapedOutputAllowsMultiline(): void
+    {
+        $this->assertEquals(
+            "3",
+            $this->renderBlade("{!! 1
+            +
+            2 !!}")
+        );
+    }
 }
