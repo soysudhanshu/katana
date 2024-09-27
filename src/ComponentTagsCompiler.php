@@ -4,9 +4,7 @@ namespace Blade;
 
 class ComponentTagsCompiler
 {
-    public function __construct(protected string $template)
-    {
-    }
+    public function __construct(protected string $template) {}
 
     public function compile()
     {
@@ -49,7 +47,7 @@ class ComponentTagsCompiler
         return $template;
     }
 
-    private function getStartRenderingCode(string $componentName, string $attributes): string
+    public function getStartRenderingCode(string $componentName, string $attributes): string
     {
         if ($componentName === 'slot') {
             return  "<?php \$component_renderer->beginSlot('$componentName', {$attributes});?>";
@@ -58,7 +56,7 @@ class ComponentTagsCompiler
         return "<?php \$component_renderer->prepare('components.{$componentName}', {$attributes});?>";
     }
 
-    private function getEndRenderingCode(): string
+    public function getEndRenderingCode(): string
     {
         return "<?php echo \$component_renderer->render(); \$component_renderer->popComponent(); ?>";
     }
@@ -149,7 +147,7 @@ class ComponentTagsCompiler
     {
         return preg_replace_callback(
             '/(-)([a-z])/',
-            fn ($matches) => strtoupper($matches[2]),
+            fn($matches) => strtoupper($matches[2]),
             $value
         );
     }

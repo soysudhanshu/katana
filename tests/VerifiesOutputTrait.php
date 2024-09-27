@@ -37,7 +37,24 @@ trait VerifiesOutputTrait
             unlink($file);
         }
 
+        $this->cleanupCompiledFiles();
+
+        rmdir($this->getTempDirectory());
+
         parent::tearDown();
+    }
+
+    protected function cleanupCompiledFiles(): void
+    {
+        $compiledFiles = scandir($this->getTempDirectory());
+
+        foreach ($compiledFiles as $file) {
+            if (in_array($file, ['.', '..'])) {
+                continue;
+            }
+
+            unlink($this->getTempDirectory() . '/' . $file);
+        }
     }
 
     private function getTempDirectory(): string

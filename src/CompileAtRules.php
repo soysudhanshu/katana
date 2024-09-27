@@ -458,4 +458,15 @@ class CompileAtRules
 
         return $output;
     }
+
+
+    public function compileComponent(string $expression): string
+    {
+        return "<?php \$component_renderer->prepare$expression; ?>";
+    }
+
+    public function compileEndComponent(): string
+    {
+        return "<?php echo \$component_renderer->render(); ?>";
+    }
 }
