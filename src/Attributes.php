@@ -67,6 +67,13 @@ class Attributes implements HtmlableInterface, IteratorAggregate
         return new static($attributes);
     }
 
+    public function removeProps(array $props): static
+    {
+        return $this->filter(
+            fn(string $name): bool => !in_array($name, $props) && !in_array(toCamelCase($name), $props)
+        );
+    }
+
     /**
      * Prevents attributes from being rendered.
      *
@@ -76,7 +83,7 @@ class Attributes implements HtmlableInterface, IteratorAggregate
     {
         $attributes = is_string($attributes) ? [$attributes] : $attributes;
 
-        return $this->filter(fn (string $key) => !in_array($key, $attributes));
+        return $this->filter(fn(string $key) => !in_array($key, $attributes));
     }
 
     public function __toString(): string
@@ -164,7 +171,7 @@ class Attributes implements HtmlableInterface, IteratorAggregate
     {
         $attributes = array_filter(
             $this->attributes,
-            fn ($value, string $key) => $callback($key, $value),
+            fn($value, string $key) => $callback($key, $value),
             ARRAY_FILTER_USE_BOTH
         );
 
@@ -173,12 +180,12 @@ class Attributes implements HtmlableInterface, IteratorAggregate
 
     public function whereStartsWith(string $needle): static
     {
-        return $this->filter(fn (string $key) => str_starts_with($key, $needle));
+        return $this->filter(fn(string $key) => str_starts_with($key, $needle));
     }
 
     public function whereDoesntStartWith(string $needle): static
     {
-        return $this->filter(fn (string $key) => !str_starts_with($key, $needle));
+        return $this->filter(fn(string $key) => !str_starts_with($key, $needle));
     }
 
     public function first(): static

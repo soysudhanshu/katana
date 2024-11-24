@@ -122,7 +122,7 @@ class ComponentRenderer
             $propsKeys[] = $key;
         }
 
-        $data['attributes'] = $attributes->except($propsKeys);;
+        $data['attributes'] = $attributes->removeProps($propsKeys);
         $data['slot'] = $component->slot;
         $data['component_renderer'] = $this;
 

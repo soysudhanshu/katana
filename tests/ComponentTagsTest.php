@@ -177,12 +177,12 @@ class ComponentTagsTest extends TestCase
     {
         $this->createComponent(
             'alert',
-            '@props(["name"])<div{{ $attributes }}>Hello, World! {{ $name }}</div>'
+            '@props(["name", "nativeLanguage"])<div {{ $attributes }}>Hello, World! {{ $name }}</div>'
         );
 
         $this->assertSame(
-            "<div>Hello, World! Taylor</div>",
-            $this->renderBlade('<x-alert name="Taylor" />')
+            "<div >Hello, World! Taylor</div>",
+            $this->renderBlade('<x-alert name="Taylor" native-language="hi" />')
         );
     }
 
@@ -339,7 +339,7 @@ class ComponentTagsTest extends TestCase
             '<x-component empty-attribute=""></x-component>',
             "<x-component empty-attribute=''></x-component>",
         ];
-        
+
         foreach ($cases as $case) {
             $this->assertSame(
                 "<p>Component Content - Empty Attribute </p>",
