@@ -3,6 +3,7 @@
 namespace Blade;
 
 use Blade\Compilers\FragmentCompiler;
+use Blade\Compilers\StackCompiler;
 use Blade\Environments\FragmentEnvironment;
 
 class CompileAtRules
@@ -13,6 +14,7 @@ class CompileAtRules
 
     use CompileForeachTrait;
     use FragmentCompiler;
+    use StackCompiler;
 
     protected bool $switchOpen = false;
     protected bool $switchFirstCaseClosed = false;

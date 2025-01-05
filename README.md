@@ -187,7 +187,8 @@ Template inheritance allows you to create layouts by defining a master template 
 | `@includeFirst`  |             | ✅     |
 | `@each`          |             | ✅     |
 | `@once`          |             | ✅     |
-| `@push`          |             | ❌     |
+| `@push`          |             | ✅     |
+| `@stack`         |             | ✅     |
 | `@pushOnce`      |             | ❌     |
 | `@prependOnce`   |             | ❌     |
 | `@php`           |             | ✅     |

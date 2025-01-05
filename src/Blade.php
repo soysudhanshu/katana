@@ -3,6 +3,7 @@
 namespace Blade;
 
 use Blade\Environments\FragmentEnvironment;
+use Blade\Environments\StackEnvironment;
 
 final class Blade
 {
@@ -28,6 +29,7 @@ final class Blade
     protected int $mode = self::MODE_PRODUCTION;
 
     use FragmentEnvironment;
+    use StackEnvironment;
 
     public static function setCachePath(string $path): void
     {
