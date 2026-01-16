@@ -2,23 +2,9 @@
 
 [![Tests](https://github.com/soysudhanshu/katana/actions/workflows/tests.yml/badge.svg)](https://github.com/soysudhanshu/katana/actions/workflows/tests.yml)
 
-Katana is a lightweight library that enables you to render Laravel Blade templates in any PHP project, without needing the full Laravel framework. Katana encourages you to use new component syntax, however traditional Blade syntax is also supported for porting from other projects like BladeOne.
+Allows you to library provides functionality to render Laravel Blade templates in any PHP project, without requiring the full Laravel framework.
 
-Katana uses `.blade.php` extension for templates, traditionally stored in `/views` directory but can be configured.
-
-## Comparison
-| Feature | Katana | BladeOne |
-| --- | --- | --- |
-| Layouts Components | ✅ | 🟨 |
-| Layouts Template Inheritance | ✅ | ✅ |
-| Control Structures | ✅ | ✅ |
-| Loops | ✅ | ✅ |
-| Conditional Class & Styles | ✅ | ❌ |
-| Additional Form Attributes | ✅ | ❌ |
-| Pipes | ❌ | ✅ |
-
-
-
+> **Note:** This package is still in development and not ready for production use.
 
 ## Getting Starting
 

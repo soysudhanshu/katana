@@ -10,7 +10,9 @@ class ComponentRenderer
     protected array $stack = [];
     protected array $slots = [];
 
-    public function __construct(private Blade $blade) {}
+    public function __construct(private Blade $blade)
+    {
+    }
 
     /**
      * Sets up component data for
@@ -24,7 +26,6 @@ class ComponentRenderer
     {
         $this->stack[] = (object) [
             'name' => $name,
-            'viewPath' => $this->blade->resolveComponentPath($name),
             'data' => $data,
             'attributes' => new Attributes($data),
             'props' => [],
@@ -83,8 +84,8 @@ class ComponentRenderer
 
         $component->slot =  new Slot($slot, new Attributes([]));
 
-        $rendered = $this->blade->renderViewFile(
-            $component->viewPath,
+        $rendered = $this->blade->render(
+            $component->name,
             (array) $this->getViewData(),
         );
 
