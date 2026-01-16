@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Blade\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ComponentTagsTest extends TestCase
@@ -160,17 +161,15 @@ class ComponentTagsTest extends TestCase
         );
     }
 
-    public function testPropsIndexedKeySetsValueToNull(): void
+    public function testUndefinedPropsThrowsException(): void
     {
         $this->createComponent(
             'alert',
-            '@props(["name"])@if(is_null($name)){{ "I am null" }}@endif'
+            '@props(["name"])'
         );
 
-        $this->assertSame(
-            "I am null",
-            $this->renderBlade('<x-alert />')
-        );
+        $this->expectException(InvalidArgumentException::class);
+        $this->renderBlade('<x-alert />');
     }
 
     public function testPropsPreventOutputInAttributes(): void

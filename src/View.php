@@ -2,6 +2,7 @@
 
 namespace Blade;
 
+use Blade\Exceptions\InvalidArgumentException;
 use Blade\Interfaces\HtmlableInterface;
 
 class View implements HtmlableInterface
@@ -57,7 +58,18 @@ class View implements HtmlableInterface
     public function render(?callable $callback = null): string
     {
         ob_start();
-        $this->engine->renderContents($this->path, $this->data);
+
+        try {
+            $this->engine->renderContents($this->path, $this->data);
+        } catch (InvalidArgumentException $e) {
+            /**
+             * Clear buffers for PHPUnit else
+             * tests will be marked as risky.
+             */
+            ob_end_clean();
+            throw $e;
+        }
+
         $output =  ob_get_clean();
 
         if ($callback) {
