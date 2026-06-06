@@ -114,11 +114,17 @@ final class Blade
 
     protected function getViewPath(string $name): string
     {
-        return sprintf(
-            '%s/%s.blade.php',
-            rtrim(self::$viewPath, '/'),
-            str_replace('.', '/', $name)
-        );
+        $defaultPath = sprintf('%s/%s.blade.php', rtrim(self::$viewPath, '/'), str_replace('.', '/', $name));
+
+        $paths = [$defaultPath];
+
+        if (str_starts_with($name, 'components')) {
+            $paths[] = sprintf('%s/%s/index.blade.php', rtrim(self::$viewPath, '/'), str_replace('.', '/', $name));
+        }
+
+        $availableFiles = array_values(array_filter($paths, fn($path) => file_exists($path)));
+
+        return $availableFiles ? $availableFiles[0] : $defaultPath;
     }
 
     protected function getCachedViewPath(string $identifier): string
