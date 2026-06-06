@@ -164,7 +164,7 @@ Template inheritance allows you to create layouts by defining a master template 
 | `Scoped Slots`                                       |             | ❌     |
 | `Slot Attributes`                                    |             | ❌     |
 | `Dynamic Components`                                 |             | ❌     |
-| `Anonymous Index Components`                         |             | ❌     |
+| `Anonymous Index Components`                         |             | ✅     |
 
 ### Directives
 
