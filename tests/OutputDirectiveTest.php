@@ -4,6 +4,7 @@ namespace Tests;
 
 use Blade\BladeCompiler;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class OutputDirectiveTest extends TestCase
 {
@@ -77,5 +78,17 @@ class OutputDirectiveTest extends TestCase
             +
             2 !!}")
         );
+    }
+
+    public function testOutputsErrorWithNonScalars(): void
+    {
+        $values = [[], new stdClass, new class{}];
+
+        foreach($values as $value){
+            $this->assertSame(
+                 sprintf("Cannot convert value of type `%s` to string.", gettype($value)),
+                $this->renderBlade('{{ $var }}', ['var' => $value])
+            );
+        }
     }
 }

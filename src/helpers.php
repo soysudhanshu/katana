@@ -3,6 +3,7 @@
 namespace Blade;
 
 use Blade\Interfaces\HtmlableInterface;
+use Stringable;
 
 function e($value): string
 {
@@ -14,9 +15,11 @@ function e($value): string
         return $value->toHtml();
     }
 
-    if (is_scalar($value)) {
+    if (is_scalar($value) || $value instanceof Stringable) {
         return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', false);
     }
+
+    return sprintf("Cannot convert value of type `%s` to string.", gettype($value));
 }
 
 
