@@ -66,11 +66,18 @@ final class Blade
 
     public function resolveComponentPath(string $name): string
     {
-        foreach ($this->anonymousComponentPaths as $basePath) {
-            $path = sprintf("%s/%s", $basePath, $this->getViewFileName($name));
+        $names = [
+            $name,
+            "{$name}.index",
+        ];
 
-            if (file_exists($path)) {
-                return $path;
+        foreach ($this->anonymousComponentPaths as $basePath) {
+            foreach ($names as $name) {
+                $path = sprintf("%s/%s", $basePath, $this->getViewFileName($name));
+
+                if (file_exists($path)) {
+                    return $path;
+                }
             }
         }
 
@@ -144,17 +151,11 @@ final class Blade
 
     protected function getViewPath(string $name): string
     {
-        $defaultPath = sprintf('%s/%s.blade.php', rtrim($this->viewPath, '/'), str_replace('.', '/', $name));
-
-        $paths = [$defaultPath];
-
-        if (str_starts_with($name, 'components')) {
-            $paths[] = sprintf('%s/%s/index.blade.php', rtrim($this->viewPath, '/'), str_replace('.', '/', $name));
-        }
-
-        $availableFiles = array_values(array_filter($paths, fn($path) => file_exists($path)));
-
-        return $availableFiles ? $availableFiles[0] : $defaultPath;
+        return sprintf(
+            '%s/%s.blade.php',
+            rtrim($this->viewPath, '/'),
+            str_replace('.', '/', $name)
+        );
     }
 
     protected function getViewFileName(string $name): string
