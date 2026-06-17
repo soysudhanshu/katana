@@ -115,7 +115,7 @@ class TemplateInheritanceRenderer
         $defaultData = $this->tempContextData ?? [];
         $this->tempContextData = null;
 
-        $this->blade->renderContents(
+        echo $this->blade->render(
             $template,
             array_merge($defaultData, $data)
         );

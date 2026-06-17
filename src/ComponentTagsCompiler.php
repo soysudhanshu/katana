@@ -55,7 +55,7 @@ class ComponentTagsCompiler
             return  "<?php \$component_renderer->beginSlot('$componentName', {$attributes});?>";
         }
 
-        return "<?php \$component_renderer->prepare('components.{$componentName}', {$attributes});?>";
+        return "<?php \$component_renderer->prepare('$componentName', {$attributes});?>";
     }
 
     private function getEndRenderingCode(): string

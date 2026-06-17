@@ -19,42 +19,67 @@ final class Blade
      */
     public const MODE_TESTING = 2;
 
-    public static string $cachePath;
-    public static string $viewPath;
-
     public array $fragments = [];
     public ComponentRenderer $componentRenderer;
     public TemplateInheritanceRenderer $templateRenderer;
 
+    public readonly string $viewPath;
+    public readonly string $cachePath;
+
     protected int $mode = self::MODE_PRODUCTION;
+    protected array $anonymousComponentPaths = [];
 
     use FragmentEnvironment;
     use StackEnvironment;
-
-    public static function setCachePath(string $path): void
-    {
-        self::$cachePath = $path;
-    }
-
-    public static function setViewPath(string $path): void
-    {
-        self::$viewPath = $path;
-    }
 
     public function setMode(int $mode): void
     {
         $this->mode = $mode;
     }
 
-    public function __construct()
+    public function __construct(string $viewPath, string $cachePath)
     {
+        $this->viewPath = rtrim($viewPath, '/');
+        $this->cachePath = rtrim($cachePath, '/');
+
+        /**
+         * Add default directory for anonymous components.
+         */
+        $this->addAnonymousComponentPath(
+            sprintf('%s/components', $this->viewPath)
+        );
+
         $this->componentRenderer = new ComponentRenderer($this);
         $this->templateRenderer = new TemplateInheritanceRenderer($this);
     }
 
-    public function compile(string $view): string
+    /**
+     * Register path for anonymous components other than
+     * the default view path.
+     */
+    public function addAnonymousComponentPath(string $path): self
     {
-        $path = $this->getViewPath($view);
+        $this->anonymousComponentPaths[] = $path;
+
+        return $this;
+    }
+
+    public function resolveComponentPath(string $name): string
+    {
+        foreach ($this->anonymousComponentPaths as $basePath) {
+            $path = sprintf("%s/%s", $basePath, $this->getViewFileName($name));
+
+            if (file_exists($path)) {
+                return $path;
+            }
+        }
+
+        return '';
+    }
+
+    public function compile(string $viewPath): string
+    {
+        $path = $viewPath;
 
         if (!file_exists($path)) {
             throw new \Exception('View not found' .  $path);
@@ -93,10 +118,15 @@ final class Blade
 
     public function render(string $view, array $data = []): View
     {
-        return new View($this, $view, $data);
+        return $this->renderViewFile($this->getViewPath($view), $data);
     }
 
-    public function renderContents(string $view, array $data = []): void
+    public function renderViewFile(string $viewPath, array $data): View
+    {
+        return new View($this, $viewPath, $data);
+    }
+
+    public function renderContents(string $viewPath, array $data = []): void
     {
         extract($data, EXTR_SKIP);
 
@@ -104,7 +134,7 @@ final class Blade
         $template_renderer = $this->templateRenderer;
         $__env = $this;
 
-        include $this->getCachedViewPath($this->compile($view));
+        include $this->getCachedViewPath($this->compile($viewPath));
     }
 
     public function viewExists(string $name): bool
@@ -114,12 +144,12 @@ final class Blade
 
     protected function getViewPath(string $name): string
     {
-        $defaultPath = sprintf('%s/%s.blade.php', rtrim(self::$viewPath, '/'), str_replace('.', '/', $name));
+        $defaultPath = sprintf('%s/%s.blade.php', rtrim($this->viewPath, '/'), str_replace('.', '/', $name));
 
         $paths = [$defaultPath];
 
         if (str_starts_with($name, 'components')) {
-            $paths[] = sprintf('%s/%s/index.blade.php', rtrim(self::$viewPath, '/'), str_replace('.', '/', $name));
+            $paths[] = sprintf('%s/%s/index.blade.php', rtrim($this->viewPath, '/'), str_replace('.', '/', $name));
         }
 
         $availableFiles = array_values(array_filter($paths, fn($path) => file_exists($path)));
@@ -127,11 +157,19 @@ final class Blade
         return $availableFiles ? $availableFiles[0] : $defaultPath;
     }
 
+    protected function getViewFileName(string $name): string
+    {
+        return sprintf(
+            '%s.blade.php',
+            str_replace('.', '/', $name)
+        );
+    }
+
     protected function getCachedViewPath(string $identifier): string
     {
         return sprintf(
             '%s/%s.php',
-            rtrim(self::$cachePath, '/'),
+            rtrim($this->cachePath, '/'),
             $identifier
         );
     }
