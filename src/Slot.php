@@ -36,4 +36,14 @@ class Slot implements HtmlableInterface
     {
         return trim($this->slot) === '';
     }
+
+    /**
+     * Determine if the slot has actual content.
+     *
+     * @return boolean
+     */
+    public function hasActualContent(): bool
+    {
+        return trim(preg_replace('/<!--.*?-->/s', '', $this->slot)) !== '';
+    }
 }
