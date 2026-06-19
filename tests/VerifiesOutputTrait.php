@@ -30,8 +30,12 @@ trait VerifiesOutputTrait
 
     public function tearDown(): void
     {
+        $files = array_merge(
+            $this->createdFiles,
+            glob("{$this->blade->cachePath}/*.php")
+        );
 
-        foreach ($this->createdFiles as $file) {
+        foreach ($files as $file) {
             if (!file_exists($file)) {
                 continue;
             }
