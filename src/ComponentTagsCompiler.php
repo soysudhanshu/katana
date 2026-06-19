@@ -113,6 +113,10 @@ class ComponentTagsCompiler
                     return "'{$name}' => {$value},";
                 }
 
+                if (str_starts_with($name, '::')) {
+                    $name = substr($name, 1);
+                }
+
                 if ($value) {
                     return "'{$name}' => {$value},";
                 }
@@ -133,7 +137,7 @@ class ComponentTagsCompiler
      */
     private function isExpressionAttribute(string $name): bool
     {
-        return str_starts_with($name, ':');
+        return str_starts_with($name, ':') && !str_starts_with($name, '::');
     }
 
     private function trimQuotes(string $value): string

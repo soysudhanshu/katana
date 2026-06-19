@@ -157,7 +157,7 @@ Template inheritance allows you to create layouts by defining a master template 
 | `Vendor Namespacing`                                 |             | ❌     |
 | `Component Attributes`                               |             | ✅     |
 | `Short hand attribute syntax`                        |             | ❌     |
-| `Attribute Render Escaping`                          |             | ❌     |
+| `Attribute Render Escaping`                          |             | ✅     |
 | `Component Methods`                                  |             | ❌     |
 | `{{ $attributes }}`                                  |             | ✅     |
 | `{{ $attributes->merge() }}`                         |             | ✅     |
