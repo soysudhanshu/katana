@@ -176,7 +176,7 @@ Template inheritance allows you to create layouts by defining a master template 
 | `$slot->isEmpty()`                                   |             | ✅     |
 | `$slot->hasActualContent()`                          |             | ✅     |
 | `Scoped Slots`                                       |             | ❌     |
-| `Slot Attributes`                                    |             | ❌     |
+| `Slot Attributes`                                    |             | ✅     |
 | `Dynamic Components`                                 |             | ❌     |
 | `Anonymous Index Components`                         |             | ✅     |
 
