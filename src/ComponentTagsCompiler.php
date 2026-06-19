@@ -23,7 +23,7 @@ class ComponentTagsCompiler
         /<x-(?'name'[a-z0-9-.]*)
         \s*
         (?'attributes'
-           (?>[\w\:\-]+
+           (?>[\w\:\-\$]+
            (?:=
              (?>
                "[^"]*" |
@@ -72,7 +72,7 @@ class ComponentTagsCompiler
         $attributes =   preg_replace_callback(
             <<<REGEX
             /(
-              (?'name'[\w\:\-]+)
+              (?'name'[\w\:\-\$]+)
                (=
                (?'value'
                  (?>
@@ -104,6 +104,10 @@ class ComponentTagsCompiler
                     );
                 }
 
+                if (str_starts_with($name, ':$')) {
+                    $value = substr($name, 1);
+                    $name = substr($name, 2);
+                }
 
                 if ($this->isExpressionAttribute($name)) {
                     $name = substr($name, 1);

@@ -363,4 +363,30 @@ class ComponentTagsTest extends TestCase
             $this->renderBlade('<x-alert ::class="hello" />')
         );
     }
+
+    public function testShortAttributeSyntax()
+    {
+        $this->createComponent(
+            'alert',
+            '@props(["type"]) {{ $type }}'
+        );
+
+        $this->assertSame(
+            'warning',
+            $this->removeIndentation($this->renderBlade('<x-alert :$type />', ['type' => 'warning']))
+        );
+    }
+
+    public function testShortMultiWordAttribute()
+    {
+        $this->createComponent(
+            'alert',
+            '@props(["messageLength"]){{ $messageLength }}'
+        );
+
+        $this->assertSame(
+            'Long message',
+            $this->renderBlade('<x-alert :$messageLength />', ['messageLength' => 'Long message'])
+        );
+    }
 }
