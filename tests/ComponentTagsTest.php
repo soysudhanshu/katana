@@ -350,4 +350,43 @@ class ComponentTagsTest extends TestCase
             );
         }
     }
+
+    public function testEscapesAttributesWithDoubleColon()
+    {
+        $this->createComponent(
+            'alert',
+            '<div {{ $attributes }}></div>'
+        );
+
+        $this->assertSame(
+            "<div :class='hello'></div>",
+            $this->renderBlade('<x-alert ::class="hello" />')
+        );
+    }
+
+    public function testShortAttributeSyntax()
+    {
+        $this->createComponent(
+            'alert',
+            '@props(["type"]) {{ $type }}'
+        );
+
+        $this->assertSame(
+            'warning',
+            $this->removeIndentation($this->renderBlade('<x-alert :$type />', ['type' => 'warning']))
+        );
+    }
+
+    public function testShortMultiWordAttribute()
+    {
+        $this->createComponent(
+            'alert',
+            '@props(["messageLength"]){{ $messageLength }}'
+        );
+
+        $this->assertSame(
+            'Long message',
+            $this->renderBlade('<x-alert :$messageLength />', ['messageLength' => 'Long message'])
+        );
+    }
 }
