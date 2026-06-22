@@ -4,6 +4,9 @@ namespace Blade;
 
 use Blade\Environments\FragmentEnvironment;
 use Blade\Environments\StackEnvironment;
+use Closure;
+use Exception;
+use InvalidArgumentException;
 
 final class Blade
 {
@@ -19,6 +22,13 @@ final class Blade
      */
     public const MODE_TESTING = 2;
 
+    public const RESERVED_DIRECTIVES = [
+        'env',
+        'production',
+    ];
+
+    public const DEFAULT_APP_ENVIRONMENT = 'production';
+
     public array $fragments = [];
     public ComponentRenderer $componentRenderer;
     public TemplateInheritanceRenderer $templateRenderer;
@@ -28,6 +38,11 @@ final class Blade
 
     protected int $mode = self::MODE_PRODUCTION;
     protected array $anonymousComponentPaths = [];
+
+    /**
+     *
+     */
+    protected array $directives = [];
 
     use FragmentEnvironment;
     use StackEnvironment;
@@ -43,6 +58,13 @@ final class Blade
         $this->cachePath = rtrim($cachePath, '/');
 
         /**
+         * Always assume application is running
+         * in production unless specified.
+         */
+        $this->setEnvironment(fn() => self::DEFAULT_APP_ENVIRONMENT);
+        $this->setDirective('production', fn() => $this->getDirective('env')(self::DEFAULT_APP_ENVIRONMENT));
+
+        /**
          * Add default directory for anonymous components.
          */
         $this->addAnonymousComponentPath(
@@ -51,6 +73,50 @@ final class Blade
 
         $this->componentRenderer = new ComponentRenderer($this);
         $this->templateRenderer = new TemplateInheritanceRenderer($this);
+    }
+
+    public function getDirective(string $name): ?callable
+    {
+        return $this->directives[$name] ?? null;
+    }
+
+    public function runDirective($name, mixed $expression = ''): mixed
+    {
+        $callback = $this->getDirective($name);
+
+        if (!$callback) {
+            return false;
+        }
+
+        return $callback($expression);
+    }
+
+    public function registerDirective(string $name, Closure $callback): static
+    {
+        if (in_array($name, self::RESERVED_DIRECTIVES)) {
+            throw new InvalidArgumentException("{$name} directive is not allowed");
+        }
+
+        return $this->setDirective($name, $callback);
+    }
+
+    protected function setDirective(string $name, Closure $callback): static
+    {
+        $this->directives[$name] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * @param Closure(): string $callback
+     */
+    public function setEnvironment(callable $callback): static
+    {
+        return $this->setDirective('env', function (string | array $environment) use ($callback) {
+            $environment = is_array($environment) ? $environment : [$environment];
+
+            return in_array($callback(), $environment);
+        });
     }
 
     /**
@@ -101,7 +167,7 @@ final class Blade
 
         $viewContents = file_get_contents($path);
 
-        $complied = (new Compiler($viewContents))->compile();
+        $complied = (new Compiler($viewContents, $this))->compile();
         $complied .= "<?php ##PATH $path ## ?>";
 
         $this->saveCache($identifier, $complied);

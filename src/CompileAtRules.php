@@ -21,7 +21,7 @@ class CompileAtRules
     protected bool $usesTemplateInheritance = false;
     protected int $forelseStatus = self::FORELSE_CLOSED;
 
-    public function __construct(protected string $content) {}
+    public function __construct(protected string $content, protected Blade $blade) {}
 
 
     public function compile(): string
@@ -119,6 +119,21 @@ class CompileAtRules
             $content = $this->replaceDirective(
                 $directive,
                 $this->{$methodName}($expression),
+                $content
+            );
+        } elseif ($this->blade->getDirective($directiveName)) {
+            $expression = trim($expression, "(");
+            $expression = trim($expression, ")");
+
+            $content = $this->replaceDirective(
+                $directive,
+                "<?php if(\$__env->runDirective('{$directiveName}', {$expression})): ?>",
+                $content,
+            );
+        } elseif (str_starts_with($directiveName, 'end') && $this->blade->getDirective(substr($directiveName, 3))) {
+            $content = $this->replaceDirective(
+                $directive,
+                "<?php endif; ?>",
                 $content
             );
         }
