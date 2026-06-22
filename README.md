@@ -7,18 +7,19 @@ Katana is a lightweight library that enables you to render Laravel Blade templat
 Katana uses `.blade.php` extension for templates, traditionally stored in `/views` directory but can be configured.
 
 ## Comparison
-| Feature | Katana | BladeOne |
-| --- | --- | --- |
-| Layouts Components | ✅ | 🟨 |
-| Layouts Template Inheritance | ✅ | ✅ |
-| Control Structures | ✅ | ✅ |
-| Loops | ✅ | ✅ |
-| Conditional Class & Styles | ✅ | ❌ |
-| Additional Form Attributes | ✅ | ❌ |
-| Pipes | ❌ | ✅ |
 
+| Feature                      | Katana | BladeOne |
+| ---------------------------- | ------ | -------- |
+| Layouts Components           | ✅     | 🟨       |
+| Layouts Template Inheritance | ✅     | ✅       |
+| Control Structures           | ✅     | ✅       |
+| Loops                        | ✅     | ✅       |
+| Conditional Class & Styles   | ✅     | ❌       |
+| Additional Form Attributes   | ✅     | ❌       |
+| Pipes                        | 🟨     | ✅       |
 
-
+> [!NOTE]
+> Pipes are now natively supported in PHP 8.5.
 
 ## Getting Starting
 
