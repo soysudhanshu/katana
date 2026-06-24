@@ -59,4 +59,30 @@ class ComponentDirectiveTest extends TestCase
             $this->renderBlade("@component('component', ['first_name' => 'John']) @endcomponent")
         );
     }
+
+    public function testSlot(): void
+    {
+        $this->createTemporaryBladeFile(
+            "Hello, {{ \$slot }}",
+            'greeting',
+        );
+
+        $this->assertSame(
+            'Hello,  John ',
+            $this->renderBlade("@component('greeting') John @endcomponent")
+        );
+    }
+
+    public function testNamedSlots(): void
+    {
+        $this->createTemporaryBladeFile(
+            "Hello, {{ \$location }}",
+            'greeting',
+        );
+
+        $this->assertSame(
+            'Hello,  North pole ',
+            $this->renderBlade("@component('greeting') @slot('location') North pole @endslot @endcomponent")
+        );
+    }
 }

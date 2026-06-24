@@ -476,6 +476,28 @@ class CompileAtRules
         return $output;
     }
 
+    public function compileSlot(string $expression): string
+    {
+        /**
+         * Trim starting and ending parenthesis
+         */
+        $expression = substr($expression, 1);
+        $expression = substr($expression, offset: 0, length: strlen($expression) - 1);
+
+        $componentPart = explode(",", $expression, 2)[0];
+
+        $slotName = trim($componentPart, '"');
+        $slotName = trim($slotName, "'");
+
+        $attributes = "[ 'name' => '{$slotName}' ]";
+
+        return ComponentTagsCompiler::getStartRenderingCode('slot', $attributes, true);
+    }
+
+    public function compileEndSlot(string $expression): string
+    {
+        return "<?php \$component_renderer->endSlot(); ?>";
+    }
 
     public function compileComponent(string $expression): string
     {

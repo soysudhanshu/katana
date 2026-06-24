@@ -49,14 +49,13 @@ class ComponentTagsCompiler
 
     public static function getStartRenderingCode(string $componentName, string $attributes, bool $componentDirectiveCompatibility = false): string
     {
-        if ($componentName === 'slot') {
-            return  "<?php \$component_renderer->beginSlot('$componentName', {$attributes});?>";
-        }
-
         $compatibilityFlag = sprintf("componentDirectiveCompatibility: %s", $componentDirectiveCompatibility ? "true" : "false");
         $attributes = trim($attributes);
         $attributes = $attributes ? $attributes : '[]';
 
+        if ($componentName === 'slot') {
+            return  "<?php \$component_renderer->beginSlot('$componentName', {$attributes});?>";
+        }
 
         return "<?php \$component_renderer->prepare('$componentName', {$attributes}, {$compatibilityFlag});?>";
     }
