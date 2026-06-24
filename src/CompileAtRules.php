@@ -479,7 +479,20 @@ class CompileAtRules
 
     public function compileComponent(string $expression): string
     {
-        return "<?php \$component_renderer->prepare$expression; ?>";
+        /**
+         * Trim starting and ending parenthesis
+         */
+        $expression = substr($expression, 1);
+        $expression = substr($expression, offset: 0, length: strlen($expression) - 1);
+
+        $componentPart = explode(",", $expression, 2)[0];
+
+        $componentName = trim($componentPart, '"');
+        $componentName = trim($componentName, "'");
+
+        $attributes = substr($expression, strlen($componentPart) + 1);
+
+        return ComponentTagsCompiler::getStartRenderingCode($componentName, $attributes, true);
     }
 
     public function compileEndComponent(): string

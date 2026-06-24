@@ -38,8 +38,8 @@ class ComponentTagsCompiler
             $regex,
             function ($matches) {
                 $attributes = $this->parseAttributes($matches['attributes']);
-                return $this->getStartRenderingCode($matches['name'], $attributes) .
-                    $this->getEndRenderingCode();
+                return self::getStartRenderingCode($matches['name'], $attributes) .
+                    self::getEndRenderingCode();
             },
             $template
         );
@@ -47,16 +47,21 @@ class ComponentTagsCompiler
         return $template;
     }
 
-    public function getStartRenderingCode(string $componentName, string $attributes): string
+    public static function getStartRenderingCode(string $componentName, string $attributes, bool $componentDirectiveCompatibility = false): string
     {
         if ($componentName === 'slot') {
             return  "<?php \$component_renderer->beginSlot('$componentName', {$attributes});?>";
         }
 
-        return "<?php \$component_renderer->prepare('$componentName', {$attributes});?>";
+        $compatibilityFlag = sprintf("componentDirectiveCompatibility: %s", $componentDirectiveCompatibility ? "true" : "false");
+        $attributes = trim($attributes);
+        $attributes = $attributes ? $attributes : '[]';
+
+
+        return "<?php \$component_renderer->prepare('$componentName', {$attributes}, {$compatibilityFlag});?>";
     }
 
-    public function getEndRenderingCode(): string
+    public static function getEndRenderingCode(): string
     {
         return "<?php echo \$component_renderer->render(); \$component_renderer->popComponent(); ?>";
     }
@@ -185,7 +190,7 @@ class ComponentTagsCompiler
             $regex,
             function ($matches) {
 
-                return $this->getStartRenderingCode(
+                return self::getStartRenderingCode(
                     $matches['name'],
                     !empty($matches['attributes']) ? $this->parseAttributes($matches['attributes']) : '[]'
                 );
@@ -205,7 +210,7 @@ class ComponentTagsCompiler
                     return "<?php \$component_renderer->endSlot(); ?>";
                 }
 
-                return $this->getEndRenderingCode();
+                return self::getEndRenderingCode();
             },
             $template
         );

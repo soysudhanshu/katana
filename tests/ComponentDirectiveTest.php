@@ -36,16 +36,27 @@ class ComponentDirectiveTest extends TestCase
 
     public function testAttributes(): void
     {
-        $this->markTestSkipped('Requires implementation');
-
         $this->createTemporaryBladeFile(
-            "Hello, {{ \$attributes }}",
+            "Hello, {{ \$name }}",
             'component'
         );
 
         $this->assertSame(
             "Hello, John",
             $this->renderBlade("@component('component', ['name' => 'John']) @endcomponent")
+        );
+    }
+
+    public function testUnderscoreAttributeName(): void
+    {
+        $this->createTemporaryBladeFile(
+            "Hello, {{ \$first_name }}",
+            'component'
+        );
+
+        $this->assertSame(
+            "Hello, John",
+            $this->renderBlade("@component('component', ['first_name' => 'John']) @endcomponent")
         );
     }
 }
