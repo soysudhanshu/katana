@@ -11,6 +11,19 @@ class TemplateInheritanceRenderer
     protected ?array $tempContextData = null;
     protected array $rendered = [];
 
+    /** Data of the current render, forwarded to the parent layout by @extends. */
+    protected array $contextData = [];
+
+    public function withContextData(array $data): void
+    {
+        $this->contextData = $data;
+    }
+
+    public function getContextData(): array
+    {
+        return $this->contextData;
+    }
+
     public function __construct(protected Blade $blade) {}
 
     public function extends(string $template): void
@@ -107,7 +120,7 @@ class TemplateInheritanceRenderer
 
         $this->renderingParentLayout = true;
 
-        echo $this->blade->render($this->template);
+        echo $this->blade->render($this->template, $this->contextData);
     }
 
     public function include(string $template, array $data = [])
