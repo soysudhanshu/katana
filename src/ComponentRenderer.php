@@ -20,11 +20,12 @@ class ComponentRenderer
      * @param array $data
      * @return void
      */
-    public function prepare(string $name, $data = [])
+    public function prepare(string $name, $data = [], bool $componentDirectiveCompatibility = false)
     {
         $this->stack[] = (object) [
             'name' => $name,
-            'viewPath' => $this->blade->resolveComponentPath($name),
+            'componentDirectiveCompatibility' => $componentDirectiveCompatibility,
+            'viewPath' => $this->blade->resolveComponentPath($name, $componentDirectiveCompatibility),
             'data' => $data,
             'attributes' => new Attributes($data),
             'props' => [],
@@ -100,7 +101,8 @@ class ComponentRenderer
 
 
         foreach ($attributes as $key => $value) {
-            $data[toCamelCase($key)] = $value;
+            $key = ($component->componentDirectiveCompatibility ?? false) ? $key : toCamelCase($key);
+            $data[$key] = $value;
         }
 
         /**

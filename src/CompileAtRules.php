@@ -21,7 +21,7 @@ class CompileAtRules
     protected bool $usesTemplateInheritance = false;
     protected int $forelseStatus = self::FORELSE_CLOSED;
 
-    public function __construct(protected string $content) {}
+    public function __construct(protected string $content, protected Blade $blade) {}
 
 
     public function compile(): string
@@ -119,6 +119,21 @@ class CompileAtRules
             $content = $this->replaceDirective(
                 $directive,
                 $this->{$methodName}($expression),
+                $content
+            );
+        } elseif ($this->blade->getDirective($directiveName)) {
+            $expression = trim($expression, "(");
+            $expression = trim($expression, ")");
+
+            $content = $this->replaceDirective(
+                $directive,
+                "<?php if(\$__env->runDirective('{$directiveName}', {$expression})): ?>",
+                $content,
+            );
+        } elseif (str_starts_with($directiveName, 'end') && $this->blade->getDirective(substr($directiveName, 3))) {
+            $content = $this->replaceDirective(
+                $directive,
+                "<?php endif; ?>",
                 $content
             );
         }
@@ -459,5 +474,51 @@ class CompileAtRules
         $this->forelseStatus = self::FORELSE_CLOSED;
 
         return $output;
+    }
+
+    public function compileSlot(string $expression): string
+    {
+        /**
+         * Trim starting and ending parenthesis
+         */
+        $expression = substr($expression, 1);
+        $expression = substr($expression, offset: 0, length: strlen($expression) - 1);
+
+        $componentPart = explode(",", $expression, 2)[0];
+
+        $slotName = trim($componentPart, '"');
+        $slotName = trim($slotName, "'");
+
+        $attributes = "[ 'name' => '{$slotName}' ]";
+
+        return ComponentTagsCompiler::getStartRenderingCode('slot', $attributes, true);
+    }
+
+    public function compileEndSlot(string $expression): string
+    {
+        return "<?php \$component_renderer->endSlot(); ?>";
+    }
+
+    public function compileComponent(string $expression): string
+    {
+        /**
+         * Trim starting and ending parenthesis
+         */
+        $expression = substr($expression, 1);
+        $expression = substr($expression, offset: 0, length: strlen($expression) - 1);
+
+        $componentPart = explode(",", $expression, 2)[0];
+
+        $componentName = trim($componentPart, '"');
+        $componentName = trim($componentName, "'");
+
+        $attributes = substr($expression, strlen($componentPart) + 1);
+
+        return ComponentTagsCompiler::getStartRenderingCode($componentName, $attributes, true);
+    }
+
+    public function compileEndComponent(): string
+    {
+        return "<?php echo \$component_renderer->render(); ?>";
     }
 }

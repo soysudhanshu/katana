@@ -15,7 +15,7 @@ class Compiler
      */
     protected array $contentBlocks = [];
 
-    public function __construct(protected string $template) {}
+    public function __construct(protected string $template, protected Blade $blade) {}
 
 
     public function compile()
@@ -25,7 +25,7 @@ class Compiler
         $result = $this->preprocessStaticBlocks($result);
         $result = $this->compileCommentDirective($result);
         $result = (new ComponentTagsCompiler($result))->compile();
-        $result = (new CompileAtRules($result))->compile();
+        $result = (new CompileAtRules($result, $this->blade))->compile();
         $result = $this->compileComponentAttributes($result);
         $result = $this->compileOutputDirective($result);
         // $result = $this->compileOutputDirective($result);

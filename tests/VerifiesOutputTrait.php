@@ -42,6 +42,7 @@ trait VerifiesOutputTrait
             unlink($file);
         }
 
+
         parent::tearDown();
     }
 
