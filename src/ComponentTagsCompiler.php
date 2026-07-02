@@ -54,7 +54,8 @@ class ComponentTagsCompiler
         $attributes = $attributes ? $attributes : '[]';
 
         if ($componentName === 'slot') {
-            return  "<?php \$component_renderer->beginSlot('$componentName', {$attributes});?>";
+            return  "<?php \$component_renderer->beginSlot('$componentName', {$attributes});?>" .
+                "<?php \$component = \$component_renderer->getLastComponent(); ?>";
         }
 
         return "<?php \$component_renderer->prepare('$componentName', {$attributes}, {$compatibilityFlag});?>";
@@ -206,7 +207,7 @@ class ComponentTagsCompiler
             $regex,
             function (array $matches) {
                 if ($matches['name'] === 'slot') {
-                    return "<?php \$component_renderer->endSlot(); ?>";
+                    return "<?php unset(\$component); ?>" . "<?php \$component_renderer->endSlot(); ?>";
                 }
 
                 return self::getEndRenderingCode();
