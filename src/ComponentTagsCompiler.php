@@ -4,9 +4,7 @@ namespace Blade;
 
 class ComponentTagsCompiler
 {
-    public function __construct(protected string $template)
-    {
-    }
+    public function __construct(protected string $template) {}
 
     public function compile()
     {
@@ -40,8 +38,8 @@ class ComponentTagsCompiler
             $regex,
             function ($matches) {
                 $attributes = $this->parseAttributes($matches['attributes']);
-                return $this->getStartRenderingCode($matches['name'], $attributes) .
-                    $this->getEndRenderingCode();
+                return self::getStartRenderingCode($matches['name'], $attributes) .
+                    self::getEndRenderingCode();
             },
             $template
         );
@@ -49,16 +47,20 @@ class ComponentTagsCompiler
         return $template;
     }
 
-    private function getStartRenderingCode(string $componentName, string $attributes): string
+    public static function getStartRenderingCode(string $componentName, string $attributes, bool $componentDirectiveCompatibility = false): string
     {
+        $compatibilityFlag = sprintf("componentDirectiveCompatibility: %s", $componentDirectiveCompatibility ? "true" : "false");
+        $attributes = trim($attributes);
+        $attributes = $attributes ? $attributes : '[]';
+
         if ($componentName === 'slot') {
             return  "<?php \$component_renderer->beginSlot('$componentName', {$attributes});?>";
         }
 
-        return "<?php \$component_renderer->prepare('$componentName', {$attributes});?>";
+        return "<?php \$component_renderer->prepare('$componentName', {$attributes}, {$compatibilityFlag});?>";
     }
 
-    private function getEndRenderingCode(): string
+    public static function getEndRenderingCode(): string
     {
         return "<?php echo \$component_renderer->render(); \$component_renderer->popComponent(); ?>";
     }
@@ -157,7 +159,7 @@ class ComponentTagsCompiler
     {
         return preg_replace_callback(
             '/(-)([a-z])/',
-            fn ($matches) => strtoupper($matches[2]),
+            fn($matches) => strtoupper($matches[2]),
             $value
         );
     }
@@ -187,7 +189,7 @@ class ComponentTagsCompiler
             $regex,
             function ($matches) {
 
-                return $this->getStartRenderingCode(
+                return self::getStartRenderingCode(
                     $matches['name'],
                     !empty($matches['attributes']) ? $this->parseAttributes($matches['attributes']) : '[]'
                 );
@@ -207,7 +209,7 @@ class ComponentTagsCompiler
                     return "<?php \$component_renderer->endSlot(); ?>";
                 }
 
-                return $this->getEndRenderingCode();
+                return self::getEndRenderingCode();
             },
             $template
         );

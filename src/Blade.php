@@ -130,14 +130,20 @@ final class Blade
         return $this;
     }
 
-    public function resolveComponentPath(string $name): string
+    public function resolveComponentPath(string $name, bool $componentDirectiveCompatibility = false): string
     {
         $names = [
             $name,
             "{$name}.index",
         ];
 
-        foreach ($this->anonymousComponentPaths as $basePath) {
+        $paths = $this->anonymousComponentPaths;
+
+        if ($componentDirectiveCompatibility) {
+            $paths = [$this->viewPath, ...$paths];
+        }
+
+        foreach ($paths as $basePath) {
             foreach ($names as $name) {
                 $path = sprintf("%s/%s", $basePath, $this->getViewFileName($name));
 
